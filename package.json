@@ -1,0 +1,16 @@
+{
+  "name": "configurator-roboczy",
+  "homepage": "https://www.pctuned.pl/konfigurator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "robocze na kod.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "axios": "^1.6.7"
+  }
+}
