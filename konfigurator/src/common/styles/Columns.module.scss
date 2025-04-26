@@ -1,0 +1,273 @@
+.title {
+  display: inline-block;
+  color: white;
+  transition: transform 0.2s ease-out;
+  text-align: center;
+  position: relative;
+  background: linear-gradient(135deg, #1f1f1f 0%, #1f1f1f 100%);
+  color: #d4ff00;
+  font-size: 1.75rem;
+  font-weight: 700;
+  padding: 1rem 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 0 0 8px 8px;
+
+  @media (min-width: 600px) {
+    font-size: 2.25rem;
+    padding: 1.25rem 0;
+
+
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: #ffe600;
+    border-radius: 2px;
+  }
+}
+
+
+
+.whiteText {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.whiteText:hover {
+  color: rgba(255, 255, 0, 0.871);
+}
+
+
+.App {
+  display: fixed;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: #282c34;
+  color: white;
+  font-size: calc(10px + 2vmin);
+}
+
+
+.otherPageButtons {
+  display: flex;
+  justify-content: center;
+  margin-right: 50px;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  position: relative;
+
+  .buttons {
+    position: relative;
+    text-decoration: none;
+    color: white;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      width: 0;
+      height: 2px;
+      background-color: yellow;
+      transition: width 0.3s ease, left 0.3s ease, right 0.3s ease;
+    }
+
+    &:hover {
+      color: yellow;
+    }
+
+    &:hover::after {
+      width: 100%;
+      left: 0;
+
+    }
+
+    &:not(:hover)::after {
+      left: auto;
+      right: 0;
+    }
+  }
+
+  @media (max-width: 1122px) {
+    display: none;
+  }
+}
+
+
+.myButton {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+
+.smallerFont {
+  font-size: 20px;
+  max-width: 100%;
+}
+
+.AppHeader {
+  display: flex;
+  flex-direction: column;
+  background-color: #282c34;
+  height: calc(100vh - 100px);
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  justify-content: space-between;
+  color: red;
+  width: 100%;
+  border: 1px solid black;
+  overflow-x: auto;
+}
+
+.cart {
+  background-color: rgb(53, 48, 48);
+  border: 1px solid #5c5656;
+  padding: 10px;
+
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.cartList {
+  justify-content: space-between;
+  margin: 10px;
+}
+
+.cartIsEmpty {
+  color: white;
+  background-color: #5c5656;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  justify-content: space-between;
+  margin: 10px;
+}
+
+.productsListNames {
+  color: white;
+  cursor: pointer;
+}
+
+.productsCartNames {
+  color: white;
+  cursor: pointer;
+  position: relative;
+
+  &::after {
+    content: attr(customTitle);
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem;
+    background-color: #333;
+    color: #fff;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    white-space: nowrap;
+    box-shadow: 0 0 3px rgb(255, 255, 255);
+    font-size: 12px;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    border: solid;
+    border-color: lightgreen transparent;
+    border-width: 6px 6px 0 6px;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .menuButton {
+      display: flex;
+      margin-left: auto;
+      color: white;
+      padding-right: 20px;
+    }
+
+    .otherPageButtons {
+      display: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .wrapper {
+      flex-direction: column;
+      height: auto;
+      padding: 10px;
+    }
+
+    .otherPageButtons {
+      flex-direction: column;
+      margin: 20px 0;
+    }
+
+    .loggedInMessage {
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .AppHeader {
+      font-size: calc(8px + 2vmin);
+      height: auto;
+      padding: 10px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .wrapper {
+      height: auto;
+      padding: 5px;
+    }
+
+    .otherPageButtons {
+      margin: 10px 0;
+    }
+
+    .loggedInMessage {
+      margin-bottom: 5px;
+    }
+
+    .AppHeader {
+      font-size: calc(6px + 2vmin);
+      padding: 5px;
+    }
+
+    .myButton {
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    .smallerFont {
+      font-size: 16px;
+    }
+  }
+
+}
