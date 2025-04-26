@@ -1,5 +1,4 @@
 const express = require('express');
-const res = require('express/lib/response');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const PORT = process.env.PORT || 9000;
