@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import styles from '../common/styles/Columns.module.scss';
+import styles from '../common/styles/ResponsiveAppBar.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
 
 function ResponsiveAppBar() {
- 
+
   // const { loggedInUser } = useAuth();
- 
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,7 +14,7 @@ function ResponsiveAppBar() {
 
   return (
     <div className={styles.title}>
-      KONFIGURATOR PCTuned   
+      KONFIGURATOR PCTuned
     </div>
   );
 }

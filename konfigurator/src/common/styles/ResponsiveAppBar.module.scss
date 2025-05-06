@@ -1,0 +1,33 @@
+.title {
+    width: 100%;
+    display: inline-block;
+    color: white;
+    transition: transform 0.2s ease-out;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(135deg, #1f1f1f 0%, #1f1f1f 100%);
+    color: #d4ff00;
+    font-size: 1.75rem;
+    font-weight: 700;
+    padding: 1rem 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+    @media (min-width: 768px) {
+        font-size: 2.25rem;
+        padding: 1.25rem 0;
+
+
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: #ffe600;
+        border-radius: 2px;
+    }
+}

@@ -13,7 +13,7 @@ function App() {
 
   return (
     <AuthProvider>
-      <div>
+      <div className={styles.box}>
         <div className={styles.appWrapper}>
           <ResponsiveAppBar
             loggedInUser={loggedInUser}

@@ -8,6 +8,7 @@ export const appSlice = createSlice({
         cart: [],
         lastViewed: [],
         currentPrice: [],
+        loadingStatus: "idle", // ✅ ← DODAJ TO
     },
     reducers: {
         loadProducts: (state, action) => {
