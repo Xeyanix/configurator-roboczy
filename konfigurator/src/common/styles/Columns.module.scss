@@ -7,21 +7,27 @@
   color: rgba(255, 255, 0, 0.871);
 }
 
-
 .App {
   width: 100%;
-  display: fixed;
   text-align: center;
-  justify-content: center;
-  align-items: center;
   background-color: #282c34;
   color: white;
   font-size: calc(10px + 2vmin);
 }
 
-
-
-
+.AppHeader {
+  display: flex;
+  flex-direction: column;
+  background-color: #282c34;
+  min-height: calc(100vh - 100px);
+  align-items: center;
+  justify-content: flex-start;
+  color: rgb(255, 255, 255);
+  width: 100%;
+  border: 1px solid black;
+  overflow-x: auto;
+  font-size: calc(10px + 2vmin);
+}
 
 .myButton {
   background-color: #4caf50;
@@ -29,39 +35,26 @@
   padding: 10px;
   border-radius: 15px;
   cursor: pointer;
+  font-size: 12px;
 }
-
 
 .smallerFont {
-  font-size: 20px;
+  font-size: 12px;
   max-width: 100%;
-}
-
-.AppHeader {
-  display: flex;
-  flex-direction: column;
-  background-color: #282c34;
-  height: calc(100vh - 100px);
-  align-items: center;
-  font-size: calc(10px + 2vmin);
-  justify-content: space-between;
-  color: red;
-  width: 100%;
-  border: 1px solid black;
-  overflow-x: auto;
 }
 
 .cart {
   background-color: rgb(53, 48, 48);
   border: 1px solid #5c5656;
-  padding: 10px;
-  width: 100%;
-  margin: 10px;
+  width: 95%;
   border-radius: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .cartList {
-  justify-content: space-between;
+  // justify-content: space-between;
+  justify-content: center;
   margin: 10px;
 }
 
@@ -72,123 +65,115 @@
   padding: 10px;
   margin: 10px;
   border-radius: 5px;
-  justify-content: space-between;
-  margin: 10px;
 }
 
 .productsListNames {
   color: white;
   cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .productsCartNames {
   color: white;
   cursor: pointer;
   position: relative;
+  font-size: 12px;
+  line-height: 1.4;
+  word-break: break-word;
+}
 
-  &::after {
-    content: attr(customTitle);
-    position: absolute;
-    bottom: 35px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.5rem;
-    background-color: #333;
-    color: #fff;
-    border-radius: 20px;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-    white-space: nowrap;
-    box-shadow: 0 0 3px rgb(255, 255, 255);
+.productsCartNames::after {
+  content: attr(customTitle);
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  background-color: #333;
+  color: #fff;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  white-space: nowrap;
+  box-shadow: 0 0 3px rgb(255, 255, 255);
+  font-size: 12px;
+}
+
+.productsCartNames:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.productsCartNames::before {
+  content: "";
+  position: absolute;
+  border: solid;
+  border-color: lightgreen transparent;
+  border-width: 6px 6px 0 6px;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.productsCartNames:hover::before {
+  opacity: 1;
+}
+
+/* 📱 RESPONSYWNOŚĆ DLA MAŁYCH EKRANÓW */
+
+@media (max-width: 768px) {
+  .AppHeader {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .myButton {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .smallerFont {
     font-size: 12px;
   }
 
-  &:hover::after {
-    opacity: 1;
-    visibility: visible;
+  .productsListNames {
+    font-size: 12px;
+    line-height: 1.2;
   }
 
-  &::before {
-    content: "";
-    position: absolute;
-    border: solid;
-    border-color: lightgreen transparent;
-    border-width: 6px 6px 0 6px;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+  .productsCartNames {
+    font-size: 12px;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 480px) {
+  .AppHeader {
+    font-size: 12px;
+    padding: 5px;
   }
 
-  &:hover::before {
-    opacity: 1;
+  .myButton {
+    padding: 5px 8px;
+    font-size: 12px;
   }
 
-  @media (max-width: 768px) {
-    .menuButton {
-      display: flex;
-      margin-left: auto;
-      color: white;
-      padding-right: 20px;
-    }
-
-    .otherPageButtons {
-      display: none;
-    }
+  .smallerFont {
+    font-size: 12px;
   }
 
-  @media (max-width: 768px) {
-    .wrapper {
-      flex-direction: column;
-      height: auto;
-      padding: 10px;
-    }
-
-    .otherPageButtons {
-      flex-direction: column;
-      margin: 20px 0;
-    }
-
-    .loggedInMessage {
-      flex-direction: column;
-      margin-bottom: 10px;
-    }
-
-    .AppHeader {
-      font-size: calc(8px + 2vmin);
-      height: auto;
-      padding: 10px;
-    }
+  .productsListNames {
+    font-size: 12px;
+    line-height: 1.1;
   }
 
-  @media (max-width: 400px) {
-    .wrapper {
-      height: auto;
-      padding: 5px;
-    }
-
-    .otherPageButtons {
-      margin: 10px 0;
-    }
-
-    .loggedInMessage {
-      margin-bottom: 5px;
-    }
-
-    .AppHeader {
-      font-size: calc(6px + 2vmin);
-      padding: 5px;
-    }
-
-    .myButton {
-      padding: 5px;
-      font-size: 14px;
-    }
-
-    .smallerFont {
-      font-size: 16px;
-    }
+  .productsCartNames {
+    font-size: 12px;
+    line-height: 1.1;
+    word-break: break-word;
   }
-
 }
