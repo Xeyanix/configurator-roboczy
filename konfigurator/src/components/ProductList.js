@@ -31,12 +31,13 @@ function ProductList() {
   const [selectedGPU, setSelectedGPU] = useState(null);
   const [selectedCase, setSelectedCase] = useState(null);
   const [isComputerBuilt, setIsComputerBuilt] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:9000';
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         dispatch(setProductsLoadingState("Loading"));
-        const response = await axios.get("http://localhost:9000/products");
+        const response = await axios.get(`${apiUrl}/products`);
         const allProducts = response.data;
 
         const motherboardProducts = filterProductsByType(allProducts, "Płyta główna");
@@ -77,13 +78,10 @@ function ProductList() {
 
       dispatch(setProductsLoadingState("AddingItem"));
 
-      await axios.post(
-        `http://localhost:9000/products/shoppingList/new`,
-        newProduct
-      );
+      await axios.post(`${apiUrl}/products/shoppingList/new`, newProduct);
 
       const shoppingListResponse = await axios.get(
-        `http://localhost:9000/products/shoppingList`
+        `${apiUrl}/products/shoppingList`
       );
       dispatch(loadCartList(shoppingListResponse.data));
       if (!lastViewedProducts.find((p) => p.id === product.id)) {
@@ -91,11 +89,11 @@ function ProductList() {
       }
       dispatch(setProductsLoadingState("success"));
 
-      let endpoint = `http://localhost:9000/products`;
+      let endpoint = `${apiUrl}/products`;
 
       switch (product.type) {
         case "Płyta główna":
-          endpoint = `http://localhost:9000/products/motherboards/${product.id}`;
+          endpoint = `${apiUrl}/products/motherboards/${product.id}`;
           setSelectedMotherboard(product);
           setSelectedProcessor(null);
           setSelectedRAM(null);
@@ -106,7 +104,7 @@ function ProductList() {
           setSelectedProduct(product);
           break;
         case "Procesor":
-          endpoint = `http://localhost:9000/products/cpus/${product.id}`;
+          endpoint = `${apiUrl}/products/cpus/${product.id}`;
           setSelectedProcessor(product);
           setSelectedRAM(null);
           setSelectedSSD(null);
@@ -116,7 +114,7 @@ function ProductList() {
           setSelectedProduct(product);
           break;
         case "RAM":
-          endpoint = `http://localhost:9000/products/rams/${product.id}`;
+          endpoint = `${apiUrl}/products/rams/${product.id}`;
           setSelectedRAM(product);
           setSelectedSSD(null);
           setSelectedCharger(null);
@@ -124,7 +122,7 @@ function ProductList() {
           setSelectedProduct(product);
           break;
         case "SSD":
-          endpoint = `http://localhost:9000/products/ssds/${product.id}`;
+          endpoint = `${apiUrl}/products/ssds/${product.id}`;
           setSelectedSSD(product);
           setSelectedCharger(null);
           setSelectedGPU(null);
@@ -132,20 +130,20 @@ function ProductList() {
           setSelectedProduct(product);
           break;
         case "Charger":
-          endpoint = `http://localhost:9000/products/chargers/${product.id}`;
+          endpoint = `${apiUrl}/products/chargers/${product.id}`;
           setSelectedCharger(product);
           setSelectedGPU(null);
           setSelectedCase(null);
           setSelectedProduct(product);
           break;
         case "GPU":
-          endpoint = `http://localhost:9000/products/gpus/${product.id}`;
+          endpoint = `${apiUrl}/products/gpus/${product.id}`;
           setSelectedGPU(product);
           setSelectedCase(null);
           setSelectedProduct(product);
           break;
         case "Cases":
-          endpoint = `http://localhost:9000/products/cases/${product.id}`;
+          endpoint = `${apiUrl}/products/cases/${product.id}`;
           setSelectedCase(product);
           setSelectedProduct(product);
           break;

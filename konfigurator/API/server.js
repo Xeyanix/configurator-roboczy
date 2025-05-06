@@ -26,10 +26,8 @@ app.use('/products', productsRoutes);
 app.get('/', (req, res) => {
   res.send('Server is running');
 });
+
 // app.listen(9000);
-
-
-
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 
