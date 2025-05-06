@@ -13,22 +13,22 @@ function Cart() {
   const cart = useSelector((state) => state.app.cart);
   const loadingStatus = useSelector((state) => state.app.loadingStatus);
   const [deletedItemId, setDeletedItemId] = useState(0);
- 
+
   const dispatch = useDispatch();
 
   const totalPrice = cart.reduce((total, product) => total + product.price, 0);
- 
+  const apiUrl = process.env.REACT_APP_API_URL || '${apiUrl}';
 
   const handleItemClick = async (product) => {
     try {
       setDeletedItemId(product.id);
       dispatch(setProductsLoadingState("RemovingItem"));
       await axios.delete(
-        `http://localhost:9000/products/shoppingList/${product.id}`
+        `${apiUrl}/products/shoppingList/${product.id}`
       );
 
       const response = await axios.get(
-        `http://localhost:9000/products/shoppingList`
+        `${apiUrl}/products/shoppingList`
       );
       dispatch(loadCartList(response.data));
       dispatch(setProductsLoadingState("success"));
@@ -44,11 +44,11 @@ function Cart() {
       setDeletedItemId(productId);
       dispatch(setProductsLoadingState("RemovingItem"));
       await axios.delete(
-        `http://localhost:9000/products/shoppingList/${productId}`
+        `${apiUrl}/products/shoppingList/${productId}`
       );
 
       const response = await axios.get(
-        `http://localhost:9000/products/shoppingList`
+        `${apiUrl}/products/shoppingList`
       );
       dispatch(loadCartList(response.data));
       dispatch(setProductsLoadingState("success"));
@@ -61,7 +61,7 @@ function Cart() {
     try {
       dispatch(setProductsLoadingState("RemovingItem"));
       console.log("Sending request to delete all items...");
-      const response = await axios.delete(`http://localhost:9000/products/shoppingList`);
+      const response = await axios.delete(`${apiUrl}/products/shoppingList`);
       console.log("Response from server:", response.data);
 
       dispatch(clearCart());
@@ -120,7 +120,7 @@ function Cart() {
               </div>
             </div>
           )}
-        
+
         </div>
       </header>
     </div>

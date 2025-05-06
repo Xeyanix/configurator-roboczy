@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styles from './App.module.scss';
 // import Filters from './components/Filters/Filters';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
-import Footer from './components/Footer';
 import { AuthProvider, useAuth } from './context/Context';
 import Header from "./components/Header";
 import Dashboard from './components/Dashboard';
@@ -29,7 +28,7 @@ function App() {
           </div>
         </div >
         <footer id="contactSection">
-          <Footer />
+
         </footer>
       </div >
     </AuthProvider>
