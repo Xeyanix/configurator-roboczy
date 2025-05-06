@@ -75,26 +75,26 @@ function Cart() {
   };
 
   const AddedItem = cart.map((product) => (
-    <li
-      className={styles.productsCartNames}
-      key={product.id}
-      onContextMenu={(event) => { removeFromShoppingList(event, product.id); }}
-      customTitle={`Kliknij prawym, aby usunąć`}
-      title={`${product.name}`}
-    >
-      <div className={styles.productInfo}>
-        {product.name} - {product.price} zł
+    // <li
+    //   className={styles.productsCartNames}
+    //   key={product.id}
+    //   // onContextMenu={(event) => { removeFromShoppingList(event, product.id); }}
+    //   // customTitle={`Kliknij prawym, aby usunąć`}
+    //   title={`${product.name}`}
+    // >
+    <div className={styles.productInfo}>
+      {product.name} - {product.price} zł
 
-        <span onClick={() => handleItemClick(product)}>
-        </span>
-        <button
-          className={styles.myButton}
-          onClick={() => handleItemClick(product)}
-        >
-          Usuń
-        </button>
-      </div>
-    </li >
+      <span onClick={() => handleItemClick(product)}>
+      </span>
+      <button
+        className={styles.myButton}
+        onClick={() => handleItemClick(product)}
+      >
+        Usuń
+      </button>
+    </div>
+    // </li >
   ));
 
   return (
