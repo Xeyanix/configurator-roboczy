@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "../common/styles/Columns.module.scss";
+import styles from "../common/styles/ProductList.module.scss";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import {
@@ -281,20 +281,22 @@ function ProductList() {
 
               <h3>Wybierz obudowę:</h3>
               <div className={styles.productContainer}>
-                {cases.length > 0 ? (
-                  cases.map((Case) => (
-                    <div key={Case.id} className={styles.productsListNames}>
-                      <h3>{Case.name}</h3>
-                      {/* <img src={Case.img} alt={Case.name} className={styles.productImage} /> */}
-                      <p>Cena: {Case.price} zł</p>
-                      <button className={styles.myButton} onClick={() => handleItemClick(Case)}>
-                        Dodaj do koszyka
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p>Loading Cases...</p>
-                )}
+                <div className={styles.leftColumn}>
+                  {cases.length > 0 ? (
+                    cases.map((Case) => (
+                      <div key={Case.id} className={styles.productsListNames}>
+                        <h3>{Case.name}</h3>
+                        {/* <img src={Case.img} alt={Case.name} className={styles.productImage} /> */}
+                        <p>Cena: {Case.price} zł</p>
+                        <button className={styles.myButton} onClick={() => handleItemClick(Case)}>
+                          Dodaj do koszyka
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Loading Cases...</p>
+                  )}
+                </div>
               </div>
             </>
           ) : selectedCharger ? (
@@ -326,20 +328,22 @@ function ProductList() {
 
               <h3>Wybierz GPU:</h3>
               <div className={styles.productContainer}>
-                {gpus.length > 0 ? (
-                  gpus.map((gpu) => (
-                    <div key={gpu.id} className={styles.productsListNames}>
-                      <h3>{gpu.name}</h3>
-                      {/* <img src={gpu.img} alt={gpu.name} className={styles.productImage} /> */}
-                      <p>Cena: {gpu.price} zł</p>
-                      <button className={styles.myButton} onClick={() => handleItemClick(gpu)}>
-                        Dodaj do koszyka
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p>Loading Gpus...</p>
-                )}
+                <div className={styles.leftColumn}>
+                  {gpus.length > 0 ? (
+                    gpus.map((gpu) => (
+                      <div key={gpu.id} className={styles.productsListNames}>
+                        <h3>{gpu.name}</h3>
+                        {/* <img src={gpu.img} alt={gpu.name} className={styles.productImage} /> */}
+                        <p>Cena: {gpu.price} zł</p>
+                        <button className={styles.myButton} onClick={() => handleItemClick(gpu)}>
+                          Dodaj do koszyka
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Loading Gpus...</p>
+                  )}
+                </div>
               </div>
             </>
           ) : selectedSSD ? (
@@ -366,21 +370,24 @@ function ProductList() {
 
               <h3>Wybierz zasilacz:</h3>
               <div className={styles.productContainer}>
-                {chargers.length > 0 ? (
-                  chargers.map((charger) => (
-                    <div key={charger.id} className={styles.productsListNames}>
-                      <h3>{charger.name}</h3>
-                      {/* <img src={charger.img} alt={charger.name} className={styles.productImage} /> */}
-                      <p>Cena: {charger.price} zł</p>
-                      <button className={styles.myButton} onClick={() => handleItemClick(charger)}>
-                        Dodaj do koszyka
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p>Loading Chargers...</p>
-                )}
+                <div className={styles.leftColumn}>
+                  {chargers.length > 0 ? (
+                    chargers.map((charger) => (
+                      <div key={charger.id} className={styles.productsListNames}>
+                        <h3>{charger.name}</h3>
+                        {/* <img src={charger.img} alt={charger.name} className={styles.productImage} /> */}
+                        <p>Cena: {charger.price} zł</p>
+                        <button className={styles.myButton} onClick={() => handleItemClick(charger)}>
+                          Dodaj do koszyka
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Loading Chargers...</p>
+                  )}
+                </div>
               </div>
+
             </>
           ) : selectedRAM ? (
             <>
@@ -401,20 +408,22 @@ function ProductList() {
 
               <h3>Wybierz SSD:</h3>
               <div className={styles.productContainer}>
-                {ssds.length > 0 ? (
-                  ssds.map((ssd) => (
-                    <div key={ssd.id} className={styles.productsListNames}>
-                      <h3>{ssd.name}</h3>
-                      {/* <img src={ssd.img} alt={ssd.name} className={styles.productsListNames} /> */}
-                      <p>Cena: {ssd.price} zł</p>
-                      <button className={styles.myButton} onClick={() => handleItemClick(ssd)}>
-                        Dodaj do koszyka
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p>Loading SSDs...</p>
-                )}
+                <div className={styles.leftColumn}>
+                  {ssds.length > 0 ? (
+                    ssds.map((ssd) => (
+                      <div key={ssd.id} className={styles.productsListNames}>
+                        <h3>{ssd.name}</h3>
+                        {/* <img src={ssd.img} alt={ssd.name} className={styles.productsListNames} /> */}
+                        <p>Cena: {ssd.price} zł</p>
+                        <button className={styles.myButton} onClick={() => handleItemClick(ssd)}>
+                          Dodaj do koszyka
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Loading SSDs...</p>
+                  )}
+                </div>
               </div>
             </>
           ) : selectedProcessor ? (
@@ -431,16 +440,18 @@ function ProductList() {
 
               <h3>Wybierz RAM:</h3>
               <div className={styles.productContainer}>
-                {rams.map((ram) => (
-                  <div key={ram.id} className={styles.productsListNames}>
-                    <h3>{ram.name}</h3>
-                    {/* <img src={ram.img} alt={ram.name} className={styles.productImage} /> */}
-                    <p>Cena: {ram.price} zł</p>
-                    <button className={styles.myButton} onClick={() => handleItemClick(ram)}>
-                      Wybierz
-                    </button>
-                  </div>
-                ))}
+                <div className={styles.leftColumn}>
+                  {rams.map((ram) => (
+                    <div key={ram.id} className={styles.productsListNames}>
+                      <h3>{ram.name}</h3>
+                      {/* <img src={ram.img} alt={ram.name} className={styles.productImage} /> */}
+                      <p>Cena: {ram.price} zł</p>
+                      <button className={styles.myButton} onClick={() => handleItemClick(ram)}>
+                        Wybierz
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </>
           ) : selectedMotherboard ? (
@@ -452,41 +463,47 @@ function ProductList() {
 
               <h3>Wybierz procesor:</h3>
               <div className={styles.productContainer}>
-                {processors.length > 0 ? (
-                  processors.map((processor) => (
-                    <div key={processor.id} className={styles.productsListNames}>
-                      <h3>{processor.name}</h3>
-                      {/* <img src={processor.img} alt={processor.name} className={styles.productImage} /> */}
-                      <p>Cena: {processor.price} zł</p>
-                      <button className={styles.myButton} onClick={() => handleItemClick(processor)}>
-                        Dodaj do koszyka
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p>Loading Processors...</p>
-                )}
+                <div className={styles.leftColumn}>
+                  {processors.length > 0 ? (
+                    processors.map((processor) => (
+                      <div key={processor.id} className={styles.productsListNames}>
+                        <h3>{processor.name}</h3>
+                        {/* <img src={processor.img} alt={processor.name} className={styles.productImage} /> */}
+                        <p>Cena: {processor.price} zł</p>
+                        <button className={styles.myButton} onClick={() => handleItemClick(processor)}>
+                          Dodaj do koszyka
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Loading Processors...</p>
+                  )}
+                </div>
               </div>
             </>
           ) : (
             <>
               <h1>Wybierz płytę główną:</h1>
               <div className={styles.productContainer}>
-                {motherboards.length > 0 ? (
-                  motherboards.map((motherboard) => (
-                    <div key={motherboard.id} className={styles.productsListNames}>
-                      <h3>{motherboard.name}</h3>
-                      {/* <img src={motherboard.img} alt={motherboard.name} className={styles.productImage} /> */}
-                      <p>Cena: {motherboard.price} zł</p>
-                      <button className={styles.myButton} onClick={() => handleItemClick(motherboard)}>
-                        Dodaj do koszyka
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p>Loading Motherboards...</p>
-                )}
+                <div className={styles.leftColumn}>
+                  {motherboards.length > 0 ? (
+                    motherboards.map((motherboard) => (
+                      <div key={motherboard.id} className={styles.productsListNames}>
+                        <h3>{motherboard.name}</h3>
+                        <p>Cena: {motherboard.price} zł</p>
+                        <button className={styles.myButton} onClick={() => handleItemClick(motherboard)}>
+                          Dodaj do koszyka
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p>Loading Motherboards...</p>
+                  )}
+                </div>
+
+
               </div>
+
             </>
           )}
         </div>

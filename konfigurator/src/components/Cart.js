@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "../common/styles/Columns.module.scss";
+import styles from "../common/styles/Cart.module.scss";
 import { useSelector, useDispatch } from "react-redux";
 import {
   loadCartList,

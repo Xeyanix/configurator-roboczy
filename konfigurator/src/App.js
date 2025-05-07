@@ -13,24 +13,24 @@ function App() {
 
   return (
     <AuthProvider>
-      <div className={styles.box}>
-        <div className={styles.appWrapper}>
-          <ResponsiveAppBar
-            loggedInUser={loggedInUser}
-          />
-          <Header />
-          {/* <Filters
+
+      <div className={styles.appWrapper}>
+        <ResponsiveAppBar
+          loggedInUser={loggedInUser}
+        />
+        <Header />
+        {/* <Filters
             Motherboards={Motherboards}
             sendfilteredProductsToAppComponent={setMotherboardsToDisplay}
           /> */}
-          <div className={styles.columnsWrapper}>
-            <Dashboard />
-          </div>
-        </div >
-        <footer id="contactSection">
-
-        </footer>
+        <div className={styles.columnsWrapper}>
+          <Dashboard />
+        </div>
       </div >
+      <footer id="contactSection">
+
+      </footer>
+
     </AuthProvider>
   );
 }

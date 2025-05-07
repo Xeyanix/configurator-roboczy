@@ -1,0 +1,120 @@
+.whiteText {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.whiteText:hover {
+  color: rgba(255, 255, 0, 0.871);
+}
+
+.App {
+  display: fixed;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: #282c34;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+
+
+.AppHeader {
+  display: flex;
+  flex-direction: column;
+  background-color: #282c34;
+  min-height: 90%;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid black;
+  font-size: calc(10px + 2vmin);
+  // overflow-x: auto;
+  height: calc(100vh - 100px);
+  color: rgb(37, 216, 79);
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+
+
+
+
+
+
+
+.myButton {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.smallerFont {
+  font-size: 14px;
+  max-width: 100%;
+}
+
+
+.productsListNames {
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+
+/* 📱 RESPONSYWNOŚĆ DLA MAŁYCH EKRANÓW */
+
+@media (max-width: 768px) {
+  .AppHeader {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .myButton {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .smallerFont {
+    font-size: 12px;
+  }
+
+  .productsListNames {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .productsCartNames {
+    font-size: 12px;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 480px) {
+  .AppHeader {
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  .myButton {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+
+  .smallerFont {
+    font-size: 12px;
+  }
+
+  .productsListNames {
+    font-size: 12px;
+    line-height: 1.1;
+  }
+
+
+}

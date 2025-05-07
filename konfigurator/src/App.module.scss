@@ -1,22 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  height: 100%;
 }
 
 .appWrapper {
-  width: 100%;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden; // dodane
+  width: 100%;
+  height: 100%;
 }
 
 .columnsWrapper {
   display: flex;
   width: 100%;
-  // flex-wrap: wrap; // pozwala łamać wiersz, jeśli elementy są za szerokie
-  box-sizing: border-box;
+  height: 100%;
 }
 
 @media (max-width: 200px) {
