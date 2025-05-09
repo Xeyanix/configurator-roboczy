@@ -13,9 +13,16 @@ function ResponsiveAppBar() {
   }, [navigate]);
 
   return (
-    <div className={styles.title}>
-      KONFIGURATOR PCTuned
+    <div className={styles.titleWrapper}>
+      <button
+        onClick={() => window.location.href = 'https://pctuned.pl/zloz-swoj-komputer/'}
+        className={styles.powrot}>
+        POWRÓT
+      </button>
+      <div className={styles.title}>KONFIGURATOR PCTuned</div>
     </div>
+
+
   );
 }
 

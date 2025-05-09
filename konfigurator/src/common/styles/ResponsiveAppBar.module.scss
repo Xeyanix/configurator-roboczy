@@ -1,9 +1,13 @@
-.title {
+.titleWrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 85px;
     width: 100%;
-    display: inline-block;
     color: white;
     transition: transform 0.2s ease-out;
-    text-align: center;
     position: relative;
     background: linear-gradient(135deg, #1f1f1f 0%, #1f1f1f 100%);
     color: #d4ff00;
@@ -30,4 +34,24 @@
         background: #ffe600;
         border-radius: 2px;
     }
+}
+
+.powrot {
+    position: absolute;
+    left: 0;
+    background-color: #139a13;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    border: none;
+    margin-left: 30px;
+
+}
+
+.napis {
+    font-size: 28px;
+    font-weight: bold;
+    color: #d4ff00;
 }
