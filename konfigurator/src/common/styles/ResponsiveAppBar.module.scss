@@ -1,57 +1,61 @@
-.titleWrapper {
-    position: relative;
+.header {
     display: flex;
-    justify-content: center;
     align-items: center;
-    text-align: center;
-    height: 85px;
-    width: 100%;
-    color: white;
-    transition: transform 0.2s ease-out;
+    justify-content: space-between;
+    background: #222;
+    padding: 0 24px;
+    height: 60px;
     position: relative;
-    background: linear-gradient(135deg, #1f1f1f 0%, #1f1f1f 100%);
-    color: #d4ff00;
-    font-size: 1.75rem;
-    font-weight: 700;
-    padding: 1rem 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-
-    @media (min-width: 768px) {
-        font-size: 2.25rem;
-        padding: 1.25rem 0;
-
-
-    }
-
-    &::after {
-        content: "";
-        position: absolute;
-        bottom: 0.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 4px;
-        background: #ffe600;
-        border-radius: 2px;
-    }
 }
 
-.powrot {
-    position: absolute;
-    left: 0;
-    background-color: #139a13;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    border: none;
-    margin-left: 30px;
-
-}
-
-.napis {
+.title {
     font-size: 28px;
     font-weight: bold;
     color: #d4ff00;
+    text-align: center;
+    flex: 1;
+}
+
+.BackIcon {
+    position: absolute;
+    left: 0;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-left: 30px;
+    transition: transform 0.2s;
+
+}
+
+.cartIcon {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    color: yellow;
+}
+
+
+.cartIcon:hover {
+    transform: scale(1.25);
+}
+
+
+.BackIcon:hover {
+    transform: scale(1.25);
+}
+
+.miniCart {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 260px;
+    background: #232323;
+    color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+    padding: 15px;
+    min-height: 50px;
+    // itd.
 }

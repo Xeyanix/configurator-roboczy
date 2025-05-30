@@ -8,7 +8,7 @@ export const appSlice = createSlice({
         cart: [],
         lastViewed: [],
         currentPrice: [],
-        loadingStatus: "idle", // ✅ ← DODAJ TO
+        loadingStatus: "idle",
     },
     reducers: {
         loadProducts: (state, action) => {
@@ -35,6 +35,9 @@ export const appSlice = createSlice({
         },
         addToLastViewed: (state, action) => {
             state.lastViewed = action.payload;
+        },
+        removeFromCart: (state, action) => {    // <--- DODANE!
+            state.cart = state.cart.filter(item => item.id !== action.payload);
         }
 
     },
@@ -48,6 +51,7 @@ export const {
     filterProducts,
     setCurrentPrice,
     addToLastViewed,
+    removeFromCart,
 } = appSlice.actions;
 
 export default appSlice.reducer;

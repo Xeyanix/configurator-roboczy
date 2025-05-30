@@ -1,0 +1,150 @@
+.BackIcon {
+  position: absolute;
+  left: 0;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-left: 30px;
+  transition: transform 0.2s;
+
+}
+
+.BackIcon:hover {
+  transform: scale(1.25);
+}
+
+
+.App {
+  display: fixed;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: #1f1f1f;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+
+.AppHeader {
+  display: flex;
+  flex-direction: column;
+  background-color: #1f1f1f;
+  min-height: 90%;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid black;
+  font-size: calc(10px + 2vmin);
+  // overflow-x: auto;
+  height: calc(100vh - 100px);
+  color: rgb(37, 216, 79);
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+
+
+
+.smallerFont {
+  overflow-x: auto;
+  font-size: 12px;
+  max-width: 100%;
+}
+
+.cart {
+  background-color: rgb(53, 48, 48);
+  border: 1px solid #5c5656;
+  width: 95%;
+  border-radius: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+
+.cartList {
+  // justify-content: space-between;
+  justify-content: center;
+  margin: 10px;
+}
+
+
+.whiteText {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.whiteText:hover {
+  color: rgba(255, 255, 0, 0.871);
+}
+
+.myButton {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+
+
+
+.cartIsEmpty {
+  color: white;
+  background-color: #5c5656;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+
+.productsCartNames {
+  color: white;
+  cursor: pointer;
+  position: relative;
+  font-size: 12px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.productsCartNames::after {
+  content: attr(customTitle);
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  background-color: #333;
+  color: #fff;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  white-space: nowrap;
+  box-shadow: 0 0 3px rgb(255, 255, 255);
+  font-size: 12px;
+}
+
+.productsCartNames:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.productsCartNames::before {
+  content: "";
+  position: absolute;
+  border: solid;
+  border-color: lightgreen transparent;
+  border-width: 6px 6px 0 6px;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.productsCartNames:hover::before {
+  opacity: 1;
+}
+
+/* 📱 RESPONSYWNOŚĆ DLA MAŁYCH EKRANÓW */

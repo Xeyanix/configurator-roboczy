@@ -6,6 +6,7 @@ const graphicsCards = [
         price: 1499.99,
         memory: '24 GB',
         memoryType: 'GDDR6X',
+        type: 'GPU'
     },
     {
         id: 52,
@@ -14,6 +15,7 @@ const graphicsCards = [
         price: 999.99,
         memory: '16 GB',
         memoryType: 'GDDR6',
+        type: 'GPU'
     },
     {
         id: 53,
@@ -22,6 +24,7 @@ const graphicsCards = [
         price: 799.99,
         memory: '10 GB',
         memoryType: 'GDDR6X',
+        type: 'GPU'
     },
     {
         id: 54,
@@ -30,6 +33,7 @@ const graphicsCards = [
         price: 649.99,
         memory: '16 GB',
         memoryType: 'GDDR6',
+        type: 'GPU'
     },
     {
         id: 55,
@@ -38,6 +42,7 @@ const graphicsCards = [
         price: 499.99,
         memory: '8 GB',
         memoryType: 'GDDR6',
+        type: 'GPU'
     },
     {
         id: 56,
@@ -46,6 +51,7 @@ const graphicsCards = [
         price: 479.99,
         memory: '12 GB',
         memoryType: 'GDDR6',
+        type: 'GPU'
     },
     {
         id: 57,
@@ -54,6 +60,7 @@ const graphicsCards = [
         price: 399.99,
         memory: '8 GB',
         memoryType: 'GDDR6',
+        type: 'GPU'
     },
     {
         id: 58,
@@ -62,6 +69,7 @@ const graphicsCards = [
         price: 379.99,
         memory: '8 GB',
         memoryType: 'GDDR6',
+        type: 'GPU'
     },
     {
         id: 59,
@@ -70,6 +78,7 @@ const graphicsCards = [
         price: 329.99,
         memory: '12 GB',
         memoryType: 'GDDR6',
+        type: 'GPU'
     },
     {
         id: 60,
@@ -78,6 +87,7 @@ const graphicsCards = [
         price: 299.99,
         memory: '8 GB',
         memoryType: 'GDDR6',
+        type: 'GPU'
     },
 ];
 

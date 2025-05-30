@@ -7,6 +7,7 @@ const motherboards = [
     memorySlots: 4,
     chipset: 'Intel Z590',
     price: 499.99,
+    type: 'Płyta główna'
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ const motherboards = [
     memorySlots: 4,
     chipset: 'AMD X570',
     price: 369.99,
+    type: 'Płyta główna'
   },
   {
     id: 3,
@@ -25,6 +27,7 @@ const motherboards = [
     memorySlots: 4,
     chipset: 'AMD B550',
     price: 189.99,
+    type: 'Płyta główna'
   },
   {
     id: 4,
@@ -34,6 +37,7 @@ const motherboards = [
     memorySlots: 4,
     chipset: 'Intel Z590',
     price: 259.99,
+    type: 'Płyta główna'
   },
   {
     id: 5,
@@ -43,6 +47,7 @@ const motherboards = [
     memorySlots: 4,
     chipset: 'AMD B450',
     price: 74.99,
+    type: 'Płyta główna'
   },
   {
     id: 6,
@@ -52,6 +57,7 @@ const motherboards = [
     memorySlots: 2,
     chipset: 'Intel H510',
     price: 64.99,
+    type: 'Płyta główna'
   },
   {
     id: 7,
@@ -61,6 +67,7 @@ const motherboards = [
     memorySlots: 4,
     chipset: 'AMD B550',
     price: 179.99,
+    type: 'Płyta główna'
   },
   {
     id: 8,
@@ -70,6 +77,7 @@ const motherboards = [
     memorySlots: 4,
     chipset: 'AMD B550',
     price: 149.99,
+    type: 'Płyta główna'
   },
   {
     id: 9,
@@ -79,6 +87,7 @@ const motherboards = [
     memorySlots: 4,
     chipset: 'Intel Z590',
     price: 229.99,
+    type: 'Płyta główna'
   },
   {
     id: 10,
@@ -88,8 +97,8 @@ const motherboards = [
     memorySlots: 2,
     chipset: 'AMD B450',
     price: 59.99,
+    type: 'Płyta główna'
   },
 ];
-
 
 module.exports = motherboards;

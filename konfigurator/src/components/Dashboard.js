@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProductList from "./ProductList";
-import Cart from "./Cart";
+import Filters from "./Filters";
 import styles from "../App.module.scss"
 import { useAuth } from '../context/Context';
 import LastViewed from './LastViewed';
@@ -47,16 +47,16 @@ function Dashboard() {
   return (
     <div className={styles.appWrapper}>
       <div className={styles.columnsWrapper}>
-        <ProductList
-          // Motherboards={MotherboardsToDisplay}
-          dodawanie={addToCart} />
-        <Cart
+
+        <Filters
           cart={cart}
           removeByRightClick={setCart}
           remove={removeItem}
           removeAll={removeAllItems}
         />
-
+        <ProductList
+          // Motherboards={MotherboardsToDisplay}
+          dodawanie={addToCart} />
       </div>
       <div>
         <LastViewed cart={listViewed} />

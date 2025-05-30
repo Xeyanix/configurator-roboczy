@@ -5,6 +5,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3600 MHz',
     price: 199.99,
+    type: 'RAM'
   },
   {
     id: 22,
@@ -12,6 +13,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3200 MHz',
     price: 179.99,
+    type: 'RAM'
   },
   {
     id: 23,
@@ -19,6 +21,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3200 MHz',
     price: 149.99,
+    type: 'RAM'
   },
   {
     id: 24,
@@ -26,6 +29,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3600 MHz',
     price: 189.99,
+    type: 'RAM'
   },
   {
     id: 25,
@@ -33,6 +37,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3200 MHz',
     price: 129.99,
+    type: 'RAM'
   },
   {
     id: 26,
@@ -40,6 +45,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3200 MHz',
     price: 239.99,
+    type: 'RAM'
   },
   {
     id: 27,
@@ -47,6 +53,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3600 MHz',
     price: 159.99,
+    type: 'RAM'
   },
   {
     id: 28,
@@ -54,6 +61,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3600 MHz',
     price: 219.99,
+    type: 'RAM'
   },
   {
     id: 29,
@@ -61,6 +69,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3200 MHz',
     price: 139.99,
+    type: 'RAM'
   },
   {
     id: 30,
@@ -68,6 +77,7 @@ const RAMs = [
     memoryType: 'DDR4',
     frequency: '3200 MHz',
     price: 159.99,
+    type: 'RAM'
   },
 ];
 

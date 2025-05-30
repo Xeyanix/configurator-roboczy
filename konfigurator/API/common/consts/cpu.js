@@ -7,7 +7,8 @@ const CPUs = [
     cores: 8,
     threads: 16,
     price: 599.99,
-    compatibleMotherboards:[1,4,6,9],
+    compatibleMotherboards: [1, 4, 6, 9],
+    type: 'Procesor'
   },
   {
     id: 12,
@@ -17,7 +18,8 @@ const CPUs = [
     cores: 16,
     threads: 32,
     price: 799.99,
-    compatibleMotherboards:[2,3,5,7,8,10],
+    compatibleMotherboards: [2, 3, 5, 7, 8, 10],
+    type: 'Procesor'
   },
   {
     id: 13,
@@ -27,7 +29,8 @@ const CPUs = [
     cores: 8,
     threads: 16,
     price: 399.99,
-    compatibleMotherboards:[1,4,6,9],
+    compatibleMotherboards: [1, 4, 6, 9],
+    type: 'Procesor'
   },
   {
     id: 14,
@@ -37,7 +40,8 @@ const CPUs = [
     cores: 8,
     threads: 16,
     price: 449.99,
-    compatibleMotherboards:[2,3,5,7,8,10],
+    compatibleMotherboards: [2, 3, 5, 7, 8, 10],
+    type: 'Procesor'
   },
   {
     id: 15,
@@ -47,7 +51,8 @@ const CPUs = [
     cores: 6,
     threads: 12,
     price: 259.99,
-    compatibleMotherboards:[1,4,6,9],
+    compatibleMotherboards: [1, 4, 6, 9],
+    type: 'Procesor'
   },
   {
     id: 16,
@@ -57,7 +62,8 @@ const CPUs = [
     cores: 6,
     threads: 12,
     price: 289.99,
-    compatibleMotherboards:[2,3,5,7,8,10],
+    compatibleMotherboards: [2, 3, 5, 7, 8, 10],
+    type: 'Procesor'
   },
   {
     id: 17,
@@ -67,7 +73,8 @@ const CPUs = [
     cores: 10,
     threads: 20,
     price: 529.99,
-    compatibleMotherboards:[1,4,6,9],
+    compatibleMotherboards: [1, 4, 6, 9],
+    type: 'Procesor'
   },
   {
     id: 18,
@@ -77,7 +84,8 @@ const CPUs = [
     cores: 12,
     threads: 24,
     price: 649.99,
-    compatibleMotherboards:[2,3,5,7,8,10],
+    compatibleMotherboards: [2, 3, 5, 7, 8, 10],
+    type: 'Procesor'
   },
   {
     id: 19,
@@ -87,7 +95,8 @@ const CPUs = [
     cores: 6,
     threads: 12,
     price: 189.99,
-    compatibleMotherboards:[1,4,6,9],
+    compatibleMotherboards: [1, 4, 6, 9],
+    type: 'Procesor'
   },
   {
     id: 20,
@@ -97,7 +106,8 @@ const CPUs = [
     cores: 8,
     threads: 16,
     price: 389.99,
-    compatibleMotherboards:[2,3,5,7,8,10],
+    compatibleMotherboards: [2, 3, 5, 7, 8, 10],
+    type: 'Procesor'
   },
 ];
 

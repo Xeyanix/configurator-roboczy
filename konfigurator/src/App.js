@@ -1,36 +1,34 @@
 import React, { useState } from 'react';
 import styles from './App.module.scss';
-// import Filters from './components/Filters/Filters';
+import { ConfigProvider } from "./context/ConfigContext";
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import { AuthProvider, useAuth } from './context/Context';
-import Header from "./components/Header";
+import Summary from "./components/Summary";
 import Dashboard from './components/Dashboard';
+import Filters from './components/Filters';
+import Filtry from './components/Filtry';
 
 function App() {
-  // const [selectedMotherboard] = useState(Motherboards);
-  // const [setMotherboardsToDisplay] = useState(selectedMotherboard);
+
   const { loggedInUser } = useAuth();
 
   return (
     <AuthProvider>
+      <ConfigProvider>
+        <div className={styles.appWrapper}>
+          <ResponsiveAppBar
+            loggedInUser={loggedInUser}
+          />
+          <Summary />
+          <Filtry />
+          <div className={styles.columnsWrapper}>
+            <Dashboard />
+          </div>
+        </div >
+        <footer id="contactSection">
 
-      <div className={styles.appWrapper}>
-        <ResponsiveAppBar
-          loggedInUser={loggedInUser}
-        />
-        <Header />
-        {/* <Filters
-            Motherboards={Motherboards}
-            sendfilteredProductsToAppComponent={setMotherboardsToDisplay}
-          /> */}
-        <div className={styles.columnsWrapper}>
-          <Dashboard />
-        </div>
-      </div >
-      <footer id="contactSection">
-
-      </footer>
-
+        </footer>
+      </ConfigProvider>
     </AuthProvider>
   );
 }
