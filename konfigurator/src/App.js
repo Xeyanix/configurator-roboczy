@@ -11,6 +11,11 @@ import Filtry from './components/Filtry';
 function App() {
 
   const { loggedInUser } = useAuth();
+  const [filters, setFilters] = useState({
+    marki: [],
+    typ: "",
+    cena: [100, 500]
+  });
 
   return (
     <AuthProvider>
@@ -20,7 +25,7 @@ function App() {
             loggedInUser={loggedInUser}
           />
           <Summary />
-          <Filtry />
+          <Filtry filters={filters} setFilters={setFilters} />
           <div className={styles.columnsWrapper}>
             <Dashboard />
           </div>

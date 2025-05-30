@@ -3,18 +3,25 @@ import styles from '../common/styles/ResponsiveAppBar.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useSelector } from "react-redux"; // <-- DODAJ TO
-import { useDispatch } from "react-redux";
-import { removeFromCart, clearCart } from "../redux/appSlice";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  loadCartList,
+  setProductsLoadingState,
+  clearCart
+} from "../redux/appSlice";
+import axios from "axios";
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
-  const cart = useSelector((state) => state.app.cart); // <-- DODAJ TO
+  const cart = useSelector((state) => state.app.cart);
+  const dispatch = useDispatch();
 
   const [showMiniCart, setShowMiniCart] = useState(false);
   const cartRef = useRef(null);
-  const dispatch = useDispatch();
 
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:10000";
+
+  // Obsługa zamykania MiniCart po kliknięciu poza niego
   useEffect(() => {
     function handleClickOutside(event) {
       if (cartRef.current && !cartRef.current.contains(event.target)) {
@@ -27,9 +34,49 @@ function ResponsiveAppBar() {
     };
   }, []);
 
+  // Załaduj koszyk przy odświeżeniu/pierwszym wejściu na stronę
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [navigate]);
+    const fetchCart = async () => {
+      try {
+        dispatch(setProductsLoadingState("loading"));
+        const response = await axios.get(`${apiUrl}/products/shoppingList`);
+        dispatch(loadCartList(response.data));
+        dispatch(setProductsLoadingState("success"));
+      } catch (error) {
+        console.error("Błąd przy pobieraniu koszyka:", error);
+        dispatch(setProductsLoadingState("error"));
+      }
+    };
+    fetchCart();
+    // eslint-disable-next-line
+  }, []);
+
+  // Funkcja do usuwania pojedynczego produktu
+  const handleRemoveItem = async (itemId) => {
+    try {
+      dispatch(setProductsLoadingState("RemovingItem"));
+      await axios.delete(`${apiUrl}/products/shoppingList/${itemId}`);
+      const response = await axios.get(`${apiUrl}/products/shoppingList`);
+      dispatch(loadCartList(response.data));
+      dispatch(setProductsLoadingState("success"));
+    } catch (error) {
+      console.error(error);
+      dispatch(setProductsLoadingState("error"));
+    }
+  };
+
+  // Funkcja do czyszczenia całego koszyka
+  const handleRemoveAll = async () => {
+    try {
+      dispatch(setProductsLoadingState("RemovingItem"));
+      await axios.delete(`${apiUrl}/products/shoppingList`);
+      dispatch(clearCart());
+      dispatch(setProductsLoadingState("success"));
+    } catch (error) {
+      console.error(error);
+      dispatch(setProductsLoadingState("error"));
+    }
+  };
 
   return (
     <div className={styles.header}>
@@ -48,8 +95,6 @@ function ResponsiveAppBar() {
         onMouseLeave={() => setShowMiniCart(false)}
         ref={cartRef}
       >
-
-
         <Link to="/koszyk" className={styles.cartIcon}>
           <ShoppingCartIcon fontSize="large" />
           {cart.length > 0 && (
@@ -71,6 +116,7 @@ function ResponsiveAppBar() {
             </span>
           )}
         </Link>
+
         {/* MiniCart */}
         {showMiniCart && (
           <div
@@ -98,12 +144,18 @@ function ResponsiveAppBar() {
               <>
                 <ul style={{ padding: 0, margin: 0, listStyle: "none" }}>
                   {cart.map((item) => (
-                    <li key={item.id} style={{ marginBottom: "6px", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <li key={item.id} style={{
+                      marginBottom: "6px",
+                      fontSize: 15,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between"
+                    }}>
                       <span>
                         {item.name} <span style={{ fontWeight: 600 }}>{item.price} zł</span>
                       </span>
                       <button
-                        onClick={() => dispatch(removeFromCart(item.id))}
+                        onClick={() => handleRemoveItem(item.id)}
                         style={{
                           background: "none",
                           border: "none",
@@ -120,7 +172,7 @@ function ResponsiveAppBar() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => dispatch(clearCart())}
+                  onClick={handleRemoveAll}
                   style={{
                     width: "100%",
                     background: "#ff5555",
@@ -158,10 +210,8 @@ function ResponsiveAppBar() {
             </div>
           </div>
         )}
-
       </div>
-
-    </div >
+    </div>
   );
 }
 

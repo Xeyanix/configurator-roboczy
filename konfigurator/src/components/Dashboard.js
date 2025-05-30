@@ -30,33 +30,18 @@ function Dashboard() {
     setListViewed((prev) => [...prev, product]);
   };
 
-  const removeItem = (productId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
-    const productIndex = cart.findIndex((item) => item.id === productId);      // Find the index of the product in the cart
-    // If the product is in the cart, remove one instance
-    if (productIndex !== -1) {
-      const updatedCart = [...cart];
-      updatedCart.splice(productIndex, 1);
-      setCart(updatedCart);
-    }
-  };
-  const removeAllItems = () => {
-    setCart([]);
-  };
+
 
   return (
     <div className={styles.appWrapper}>
       <div className={styles.columnsWrapper}>
-
         <Filters
-          cart={cart}
-          removeByRightClick={setCart}
-          remove={removeItem}
-          removeAll={removeAllItems}
+
         />
         <ProductList
           // Motherboards={MotherboardsToDisplay}
-          dodawanie={addToCart} />
+          dodawanie={addToCart}
+        />
       </div>
       <div>
         <LastViewed cart={listViewed} />

@@ -1,28 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+function saveCartToStorage(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+const initialState = {
+    productsList: [],
+    filteredProducts: [],
+    cart: JSON.parse(localStorage.getItem("cart") || "[]"),
+    lastViewed: [],
+    currentPrice: [],
+    loadingStatus: "idle",
+};
+
 export const appSlice = createSlice({
     name: "app",
-    initialState: {
-        productsList: [],
-        filteredProducts: [],
-        cart: [],
-        lastViewed: [],
-        currentPrice: [],
-        loadingStatus: "idle",
-    },
+    initialState,
     reducers: {
         loadProducts: (state, action) => {
             state.productsList = action.payload;
         },
         loadCartList: (state, action) => {
             state.cart = action.payload;
-
+            saveCartToStorage(state.cart);
         },
         setProductsLoadingState: (state, action) => {
             state.loadingStatus = action.payload;
         },
         clearCart: (state) => {
             state.cart = [];
+            saveCartToStorage([]);
         },
         filterProducts: (state, action) => {
             const searchTerm = action.payload.toLowerCase();
@@ -36,10 +43,14 @@ export const appSlice = createSlice({
         addToLastViewed: (state, action) => {
             state.lastViewed = action.payload;
         },
-        removeFromCart: (state, action) => {    // <--- DODANE!
+        addToCart: (state, action) => {
+            state.cart.push(action.payload);
+            saveCartToStorage(state.cart);
+        },
+        removeFromCart: (state, action) => {
             state.cart = state.cart.filter(item => item.id !== action.payload);
-        }
-
+            saveCartToStorage(state.cart);
+        },
     },
 });
 
@@ -51,6 +62,7 @@ export const {
     filterProducts,
     setCurrentPrice,
     addToLastViewed,
+    addToCart,
     removeFromCart,
 } = appSlice.actions;
 

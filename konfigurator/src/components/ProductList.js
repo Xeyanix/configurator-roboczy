@@ -9,11 +9,15 @@ import {
 } from "../redux/appSlice";
 import { v4 as uuidv4 } from "uuid";
 import { useConfig } from "../context/ConfigContext";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-function ProductList() {
+function ProductList({ filters }) { // <--- odbieramy filters!
   const loadingStatus = useSelector((state) => state.app.loadingStatus);
   const lastViewedProducts = useSelector((state) => state.app.lastViewed);
   const dispatch = useDispatch();
+
+
+  const [allProducts, setAllProducts] = useState([]);
 
   const [motherboards, setMotherboards] = useState([]);
   const [processors, setProcessors] = useState([]);
@@ -36,35 +40,43 @@ function ProductList() {
 
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:10000";
 
+  // 1. Pobierz WSZYSTKIE produkty raz na starcie
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        dispatch(setProductsLoadingState("Loading"));
-        const response = await axios.get(`${apiUrl}/products`);
-        const allProducts = response.data;
-
-        setMotherboards(allProducts.filter(p => p.type === "Płyta główna"));
-        setProcessors(allProducts.filter(p => p.type === "Procesor"));
-        setRAMs(allProducts.filter(p => p.type === "RAM"));
-        setSSDs(allProducts.filter(p => p.type === "SSD"));
-        setChargers(allProducts.filter(p => p.type === "Charger"));
-        setGpus(allProducts.filter(p => p.type === "GPU"));
-        setCases(allProducts.filter(p => p.type === "Cases"));
-
+    dispatch(setProductsLoadingState("Loading"));
+    axios.get(`${apiUrl}/products`)
+      .then(res => {
+        setAllProducts(res.data || []);
         dispatch(setProductsLoadingState("success"));
-      } catch (error) {
-        console.error(error);
-        dispatch(setProductsLoadingState("error"));
-      }
-    };
+      })
+      .catch(() => dispatch(setProductsLoadingState("error")));
+  }, [apiUrl, dispatch]);
 
-    fetchProducts();
-  }, [dispatch]);
+  // 2. FILTRUJ produkty wg filtrów i podziel na kategorie
+  useEffect(() => {
+    // UWAGA! Zmień poniżej 'brand' na 'marka', jeśli w Twoich danych jest 'marka' a nie 'brand'!
+    const markaKey = "brand";
+    const typKey = "typ";
+    const cenaKey = "price";
 
+    const filtered = allProducts.filter(prod => {
+      if (filters && filters.marki && filters.marki.length && !filters.marki.includes(prod[markaKey])) return false;
+      if (filters && filters.typ && prod[typKey] !== filters.typ) return false;
+      if (filters && filters.cena && (prod[cenaKey] < filters.cena[0] || prod[cenaKey] > filters.cena[1])) return false;
+      return true;
+    });
+
+    setMotherboards(filtered.filter(p => p.type === "Płyta główna"));
+    setProcessors(filtered.filter(p => p.type === "Procesor"));
+    setRAMs(filtered.filter(p => p.type === "RAM"));
+    setSSDs(filtered.filter(p => p.type === "SSD"));
+    setChargers(filtered.filter(p => p.type === "Charger"));
+    setGpus(filtered.filter(p => p.type === "GPU"));
+    setCases(filtered.filter(p => p.type === "Cases"));
+  }, [allProducts, filters]);
+
+  // Wybor i dodawanie jak miałeś
   const handleItemClick = async (product) => {
     const newProduct = { ...product, id: uuidv4() };
-
-    // ZAWSZE dodajemy type!
     let type = "";
     switch (product.type || product.category || product.group) {
       case "Płyta główna":
@@ -88,7 +100,6 @@ function ProductList() {
     }
     const productWithType = { ...product, type };
 
-    // Jeśli używasz contextu:
     switch (type) {
       case "Płyta główna":
         setSelectedMotherboard(productWithType); break;
@@ -159,7 +170,9 @@ function ProductList() {
     if (!selected) return null;
     return (
       <div className={styles.selectedTitle}>
-        <h1>{label}</h1>
+        <h1>
+          <CheckCircleIcon style={{ color: "green", fontSize: 32, verticalAlign: "middle" }} />   {label}
+        </h1>
         <p><strong>{selected.name}</strong></p>
         <p>Cena: {selected.price} zł</p>
         <button className={styles.myButton} onClick={onChange}>
@@ -172,7 +185,6 @@ function ProductList() {
   return (
     <div className={styles.App}>
       <header className={styles.AppHeader}>
-        {/* Przycisk pojawia się tylko, gdy wszystkie komponenty są wybrane */}
         {allSelected && (
           <button className={styles.myButton} onClick={handleRebuild}>
             Złóż komputer ponownie
@@ -180,43 +192,36 @@ function ProductList() {
         )}
 
         <div className={styles.smallerFont}>
-          {/* Płyta główna */}
           {!selectedMotherboard
             ? renderStep("płytę główną", motherboards, handleItemClick)
             : <SelectedTile label={labels.motherboard} selected={selectedMotherboard} onChange={() => setSelectedMotherboard(null)} />
           }
 
-          {/* Procesor */}
           {selectedMotherboard && !selectedProcessor
             ? renderStep("procesor", processors, handleItemClick)
             : selectedProcessor && <SelectedTile label={labels.processor} selected={selectedProcessor} onChange={() => setSelectedProcessor(null)} />
           }
 
-          {/* RAM */}
           {selectedMotherboard && selectedProcessor && !selectedRAM
             ? renderStep("pamięć RAM", rams, handleItemClick)
             : selectedRAM && <SelectedTile label={labels.ram} selected={selectedRAM} onChange={() => setSelectedRAM(null)} />
           }
 
-          {/* SSD */}
           {selectedMotherboard && selectedProcessor && selectedRAM && !selectedSSD
             ? renderStep("dysk SSD", ssds, handleItemClick)
             : selectedSSD && <SelectedTile label={labels.ssd} selected={selectedSSD} onChange={() => setSelectedSSD(null)} />
           }
 
-          {/* Zasilacz */}
           {selectedMotherboard && selectedProcessor && selectedRAM && selectedSSD && !selectedCharger
             ? renderStep("zasilacz", chargers, handleItemClick)
             : selectedCharger && <SelectedTile label={labels.charger} selected={selectedCharger} onChange={() => setSelectedCharger(null)} />
           }
 
-          {/* GPU */}
           {selectedMotherboard && selectedProcessor && selectedRAM && selectedSSD && selectedCharger && !selectedGPU
             ? renderStep("GPU", gpus, handleItemClick)
             : selectedGPU && <SelectedTile label={labels.gpu} selected={selectedGPU} onChange={() => setSelectedGPU(null)} />
           }
 
-          {/* Obudowa */}
           {selectedMotherboard && selectedProcessor && selectedRAM && selectedSSD && selectedCharger && selectedGPU && !selectedCase
             ? renderStep("obudowę", cases, handleItemClick)
             : selectedCase && <SelectedTile label={labels.case} selected={selectedCase} onChange={() => setSelectedCase(null)} />
