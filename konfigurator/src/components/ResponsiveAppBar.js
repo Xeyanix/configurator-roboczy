@@ -5,7 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useSelector } from "react-redux"; // <-- DODAJ TO
 import { useDispatch } from "react-redux";
-import { removeFromCart } from "../redux/appSlice"; // Dodaj, jeśli masz już tę akcję!
+import { removeFromCart, clearCart } from "../redux/appSlice";
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
@@ -95,30 +95,48 @@ function ResponsiveAppBar() {
             {cart.length === 0 ? (
               <div>Koszyk jest pusty</div>
             ) : (
-              <ul style={{ padding: 0, margin: 0, listStyle: "none" }}>
-                {cart.map((item) => (
-                  <li key={item.id} style={{ marginBottom: "6px", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span>
-                      {item.name} <span style={{ fontWeight: 600 }}>{item.price} zł</span>
-                    </span>
-                    <button
-                      onClick={() => dispatch(removeFromCart(item.id))}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: "#ff5555",
-                        fontSize: 18,
-                        cursor: "pointer",
-                        marginLeft: 8,
-                      }}
-                      title="Usuń z koszyka"
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-
+              <>
+                <ul style={{ padding: 0, margin: 0, listStyle: "none" }}>
+                  {cart.map((item) => (
+                    <li key={item.id} style={{ marginBottom: "6px", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <span>
+                        {item.name} <span style={{ fontWeight: 600 }}>{item.price} zł</span>
+                      </span>
+                      <button
+                        onClick={() => dispatch(removeFromCart(item.id))}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#ff5555",
+                          fontSize: 18,
+                          cursor: "pointer",
+                          marginLeft: 8,
+                        }}
+                        title="Usuń z koszyka"
+                      >
+                        ×
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => dispatch(clearCart())}
+                  style={{
+                    width: "100%",
+                    background: "#ff5555",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "7px 0",
+                    fontWeight: "bold",
+                    fontSize: 15,
+                    cursor: "pointer",
+                    margin: "10px 0 5px 0"
+                  }}
+                >
+                  Usuń wszystko
+                </button>
+              </>
             )}
             <div style={{ marginTop: "13px", textAlign: "center" }}>
               <Link
@@ -140,6 +158,7 @@ function ResponsiveAppBar() {
             </div>
           </div>
         )}
+
       </div>
 
     </div >

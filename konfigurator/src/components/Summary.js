@@ -11,104 +11,55 @@ function Summary() {
     selectedCharger,
     selectedGPU,
     selectedCase,
-    handleRebuild,
-    clearSelectedPart // <--- to ważne!
+    clearSelectedPart,
   } = useConfig();
 
-  const totalPrice =
-    (selectedMotherboard?.price || 0) +
-    (selectedProcessor?.price || 0) +
-    (selectedRAM?.price || 0) +
-    (selectedSSD?.price || 0) +
-    (selectedCharger?.price || 0) +
-    (selectedGPU?.price || 0) +
-    (selectedCase?.price || 0);
+  const labels = [
+    "Płyta główna", "Procesor", "RAM", "SSD", "Zasilacz", "GPU", "Obudowa"
+  ];
+  const parts = [
+    selectedMotherboard,
+    selectedProcessor,
+    selectedRAM,
+    selectedSSD,
+    selectedCharger,
+    selectedGPU,
+    selectedCase,
+  ];
+
+  const totalPrice = parts.reduce((acc, part) => acc + (part?.price || 0), 0);
 
   return (
-    <div className={styles.summaryBox}>
-      <h2>Podsumowanie:</h2>
-      <ul className={styles.productsListNames}>
-        {selectedMotherboard && (
-          <li>
-            Płyta główna: {selectedMotherboard.name} - {selectedMotherboard.price} zł
-            <button
-              className={styles.removeButton}
-              onClick={() => clearSelectedPart(selectedMotherboard)}
-            >
-              Usuń
-            </button>
-          </li>
-        )}
-        {selectedProcessor && (
-          <li>
-            Procesor: {selectedProcessor.name} - {selectedProcessor.price} zł
-            <button
-              className={styles.removeButton}
-              onClick={() => clearSelectedPart(selectedProcessor)}
-            >
-              Usuń
-            </button>
-          </li>
-        )}
-        {selectedRAM && (
-          <li>
-            RAM: {selectedRAM.name} - {selectedRAM.price} zł
-            <button
-              className={styles.removeButton}
-              onClick={() => clearSelectedPart(selectedRAM)}
-            >
-              Usuń
-            </button>
-          </li>
-        )}
-        {selectedSSD && (
-          <li>
-            SSD: {selectedSSD.name} - {selectedSSD.price} zł
-            <button
-              className={styles.removeButton}
-              onClick={() => clearSelectedPart(selectedSSD)}
-            >
-              Usuń
-            </button>
-          </li>
-        )}
-        {selectedCharger && (
-          <li>
-            Zasilacz: {selectedCharger.name} - {selectedCharger.price} zł
-            <button
-              className={styles.removeButton}
-              onClick={() => clearSelectedPart(selectedCharger)}
-            >
-              Usuń
-            </button>
-          </li>
-        )}
-        {selectedGPU && (
-          <li>
-            GPU: {selectedGPU.name} - {selectedGPU.price} zł
-            <button
-              className={styles.removeButton}
-              onClick={() => clearSelectedPart(selectedGPU)}
-            >
-              Usuń
-            </button>
-          </li>
-        )}
-        {selectedCase && (
-          <li>
-            Obudowa: {selectedCase.name} - {selectedCase.price} zł
-            <button
-              className={styles.removeButton}
-              onClick={() => clearSelectedPart(selectedCase)}
-            >
-              Usuń
-            </button>
-          </li>
-        )}
-      </ul>
-      <p>
-        <strong>Suma: {totalPrice} zł</strong>
-      </p>
+    <div className={styles.box}>
+
+      <div className={styles.summaryBox}>
+        <h2 className={styles.summaryTitle}>Podsumowanie:</h2>
+        <div>
+          {parts.map((item, idx) => {
+            if (!item) return null;
+            return (
+              <div className={styles.tile} key={idx}>
+                <span className={styles.partInfo}>
+                  {labels[idx]}: {item.name} - {item.price} zł
+                </span>
+                <button
+                  className={styles.removeButton}
+                  onClick={() => clearSelectedPart(item)}
+                  title={`Usuń ${item.name}`}
+                >
+                  ×
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        <div className={styles.totalBox}>
+          <span><strong>Suma:</strong></span>
+          <span className={styles.totalPrice}> {totalPrice} zł</span>
+
+        </div>
+      </div>
+
     </div>
   );
 }

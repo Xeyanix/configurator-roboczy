@@ -64,7 +64,6 @@ function ProductList() {
   const handleItemClick = async (product) => {
     const newProduct = { ...product, id: uuidv4() };
 
-
     // ZAWSZE dodajemy type!
     let type = "";
     switch (product.type || product.category || product.group) {
@@ -109,8 +108,6 @@ function ProductList() {
         break;
     }
 
-
-
     await axios.post(`${apiUrl}/products/shoppingList/new`, newProduct);
     const shoppingListResponse = await axios.get(`${apiUrl}/products/shoppingList`);
     dispatch(loadCartList(shoppingListResponse.data));
@@ -149,15 +146,24 @@ function ProductList() {
     case: "Wybrana obudowa",
   };
 
+  // Sprawdzamy, czy wszystkie komponenty są wybrane
+  const allSelected = selectedMotherboard &&
+    selectedProcessor &&
+    selectedRAM &&
+    selectedSSD &&
+    selectedCharger &&
+    selectedGPU &&
+    selectedCase;
+
   function SelectedTile({ label, selected, onChange }) {
     if (!selected) return null;
     return (
       <div className={styles.selectedTitle}>
-        <h3>{label}</h3>
+        <h1>{label}</h1>
         <p><strong>{selected.name}</strong></p>
         <p>Cena: {selected.price} zł</p>
         <button className={styles.myButton} onClick={onChange}>
-          Zmień {label.split(' ')[1].toLowerCase()} {/* np. "płyta", "procesor" itd. */}
+          Zmień {label.split(' ')[1].toLowerCase()}
         </button>
       </div>
     );
@@ -166,38 +172,41 @@ function ProductList() {
   return (
     <div className={styles.App}>
       <header className={styles.AppHeader}>
-        <button className={styles.myButton} onClick={handleRebuild}>
-          Złóż komputer ponownie
-        </button>
+        {/* Przycisk pojawia się tylko, gdy wszystkie komponenty są wybrane */}
+        {allSelected && (
+          <button className={styles.myButton} onClick={handleRebuild}>
+            Złóż komputer ponownie
+          </button>
+        )}
 
         <div className={styles.smallerFont}>
           {/* Płyta główna */}
           {!selectedMotherboard
-            ? renderStep("Płyta główna", motherboards, handleItemClick)
+            ? renderStep("płytę główną", motherboards, handleItemClick)
             : <SelectedTile label={labels.motherboard} selected={selectedMotherboard} onChange={() => setSelectedMotherboard(null)} />
           }
 
           {/* Procesor */}
           {selectedMotherboard && !selectedProcessor
-            ? renderStep("Procesor", processors, handleItemClick)
+            ? renderStep("procesor", processors, handleItemClick)
             : selectedProcessor && <SelectedTile label={labels.processor} selected={selectedProcessor} onChange={() => setSelectedProcessor(null)} />
           }
 
           {/* RAM */}
           {selectedMotherboard && selectedProcessor && !selectedRAM
-            ? renderStep("RAM", rams, handleItemClick)
+            ? renderStep("pamięć RAM", rams, handleItemClick)
             : selectedRAM && <SelectedTile label={labels.ram} selected={selectedRAM} onChange={() => setSelectedRAM(null)} />
           }
 
           {/* SSD */}
           {selectedMotherboard && selectedProcessor && selectedRAM && !selectedSSD
-            ? renderStep("SSD", ssds, handleItemClick)
+            ? renderStep("dysk SSD", ssds, handleItemClick)
             : selectedSSD && <SelectedTile label={labels.ssd} selected={selectedSSD} onChange={() => setSelectedSSD(null)} />
           }
 
           {/* Zasilacz */}
           {selectedMotherboard && selectedProcessor && selectedRAM && selectedSSD && !selectedCharger
-            ? renderStep("Zasilacz", chargers, handleItemClick)
+            ? renderStep("zasilacz", chargers, handleItemClick)
             : selectedCharger && <SelectedTile label={labels.charger} selected={selectedCharger} onChange={() => setSelectedCharger(null)} />
           }
 
@@ -209,7 +218,7 @@ function ProductList() {
 
           {/* Obudowa */}
           {selectedMotherboard && selectedProcessor && selectedRAM && selectedSSD && selectedCharger && selectedGPU && !selectedCase
-            ? renderStep("Obudowa", cases, handleItemClick)
+            ? renderStep("obudowę", cases, handleItemClick)
             : selectedCase && <SelectedTile label={labels.case} selected={selectedCase} onChange={() => setSelectedCase(null)} />
           }
         </div>
@@ -219,15 +228,22 @@ function ProductList() {
 }
 
 function renderStep(label, items, onSelect) {
-
   return (
     <>
-      <h3>Wybierz {label}:</h3>
+      <div className={styles.choosen}>Wybierz {label}:</div>
       <div className={styles.productContainer}>
         <div className={styles.leftColumn}>
           {items.length > 0 ? (
             items.map(item => (
               <div key={item.id} className={styles.productsListNames}>
+                {item.image && (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className={styles.productImage}
+                  />
+                )}
+
                 <h3>{item.name}</h3>
                 <p>Cena: {item.price} zł</p>
                 <button className={styles.myButton} onClick={() => onSelect(item)}>

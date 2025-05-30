@@ -18,7 +18,9 @@
   color: white;
 }
 
-
+.selectedTitle {
+  color: white;
+}
 
 .AppHeader {
   display: flex;
@@ -34,6 +36,24 @@
   color: rgb(37, 216, 79);
   width: 100%;
   overflow-x: auto;
+}
+
+.choosen {
+  color: yellow;
+  font-size: 42px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  word-spacing: 8px;
+  letter-spacing: 2px;
+}
+
+.productImage {
+  width: 120px;
+  height: auto;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #f9f9f9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 }
 
 .myButton {
@@ -54,7 +74,7 @@
 .productsListNames {
   color: white;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
   line-height: 1.4;
 
   li {
