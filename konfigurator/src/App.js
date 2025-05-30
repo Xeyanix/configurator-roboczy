@@ -5,17 +5,10 @@ import ResponsiveAppBar from './components/ResponsiveAppBar';
 import { AuthProvider, useAuth } from './context/Context';
 import Summary from "./components/Summary";
 import Dashboard from './components/Dashboard';
-import Filters from './components/Filters';
 import Filtry from './components/Filtry';
 
 function App() {
-
   const { loggedInUser } = useAuth();
-  const [filters, setFilters] = useState({
-    marki: [],
-    typ: "",
-    cena: [100, 500]
-  });
 
   return (
     <AuthProvider>
@@ -25,7 +18,7 @@ function App() {
             loggedInUser={loggedInUser}
           />
           <Summary />
-          <Filtry filters={filters} setFilters={setFilters} />
+          <Filtry />
           <div className={styles.columnsWrapper}>
             <Dashboard />
           </div>

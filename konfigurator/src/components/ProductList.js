@@ -18,7 +18,6 @@ function ProductList({ filters }) { // <--- odbieramy filters!
 
 
   const [allProducts, setAllProducts] = useState([]);
-
   const [motherboards, setMotherboards] = useState([]);
   const [processors, setProcessors] = useState([]);
   const [rams, setRAMs] = useState([]);

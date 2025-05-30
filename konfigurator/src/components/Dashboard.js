@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ProductList from "./ProductList";
 import Filters from "./Filters";
-import styles from "../App.module.scss"
+import styles from "../App.module.scss";
 import { useAuth } from '../context/Context';
 import LastViewed from './LastViewed';
 
-function Dashboard() {
+function Dashboard() { 
   const [cart, setCart] = useState([]);
-  // const [selectedMotherboard, setSelectedMotherboard] = useState(Motherboards);
-  // const [MotherboardsToDisplay] = useState(selectedMotherboard);
   const [scrollPosition] = useState(0);
   const { login, loggedInUser } = useAuth();
-  const [listViewed, setListViewed] = useState([]); // Użyj osobnego stanu dla listy ostatnio oglądanych
+  const [listViewed, setListViewed] = useState([]);
 
   useEffect(() => {
     window.scrollTo({
@@ -19,39 +17,29 @@ function Dashboard() {
     });
     if (loggedInUser) {
       login(loggedInUser);
-    } else {
-
     }
   }, [scrollPosition, loggedInUser, login]);
 
   const addToCart = (product) => {
     setCart((prevCart) => [...prevCart, product]);
-    // setSelectedMotherboard((prev) => [...prev, product]);
     setListViewed((prev) => [...prev, product]);
   };
-
-
 
   return (
     <div className={styles.appWrapper}>
       <div className={styles.columnsWrapper}>
         <Filters
-
+         
         />
         <ProductList
-          // Motherboards={MotherboardsToDisplay}
+         
           dodawanie={addToCart}
         />
       </div>
       <div>
         <LastViewed cart={listViewed} />
       </div>
-
     </div>
-
-
-
-
   );
 }
 
