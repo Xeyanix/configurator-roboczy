@@ -1,66 +1,43 @@
 import React, { useState } from "react";
 import styles from "../common/styles/Summary.module.scss";
-import { useConfig } from "../context/ConfigContext";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart, loadCartList } from "../redux/appSlice";
+import {
+    removeFromCart,
+    loadCartList,
+    clearConfigPart
+} from "../redux/appSlice";
 import axios from "axios";
 
-// <-- DODANO
+// Mapowanie kluczy na etykiety do wyświetlania
 const TYPE_MAP = {
-    "Płyta główna": "Płyta główna",
-    "Procesor": "Procesor",
-    "RAM": "RAM",
-    "SSD": "SSD",
-    "Zasilacz": "Charger",
-    "Charger": "Charger",
-    "GPU": "GPU",
-    "Obudowa": "Cases",
-    "Cases": "Cases"
+    motherboard: "Płyta główna",
+    processor: "Procesor",
+    ram: "RAM",
+    ssd: "SSD",
+    charger: "Zasilacz",
+    gpu: "GPU",
+    case: "Obudowa"
 };
-function mapType(type) {
-    return TYPE_MAP[type] || type;
-}
-// <--
+const TYPE_KEYS = Object.keys(TYPE_MAP);
 
 function Summary() {
-    const {
-        selectedMotherboard,
-        selectedProcessor,
-        selectedRAM,
-        selectedSSD,
-        selectedCharger,
-        selectedGPU,
-        selectedCase,
-        clearSelectedPart,
-    } = useConfig();
-
+    const summaryConfig = useSelector((state) => state.app.summaryConfig);
     const cart = useSelector((state) => state.app.cart);
     const dispatch = useDispatch();
     const [removingId, setRemovingId] = useState(null);
 
-    const typeArray = [
-        "Płyta główna", "Procesor", "RAM", "SSD", "Charger", "GPU", "Cases"
-    ];
-
-    const parts = [
-        selectedMotherboard,
-        selectedProcessor,
-        selectedRAM,
-        selectedSSD,
-        selectedCharger,
-        selectedGPU,
-        selectedCase,
-    ];
+    // Zbierz części z podsumowania w kolejności
+    const parts = TYPE_KEYS.map((key) => summaryConfig[key]);
 
     const totalPrice = parts.reduce((acc, part) => acc + (part?.price || 0), 0);
 
     const handleRemove = async (item, idx) => {
         setRemovingId(item.name);
-        // <-- ZMIANA
-        const itemWithType = { ...item, type: mapType(typeArray[idx]) };
-        clearSelectedPart(itemWithType);
-        // <--
 
+        // 1. Czyść z podsumowania (summaryConfig)
+        dispatch(clearConfigPart({ type: TYPE_KEYS[idx] }));
+
+        // 2. Czyść z koszyka, jeśli jest
         const cartProduct = cart.find(p => p.name === item.name);
         if (cartProduct) {
             dispatch(removeFromCart(cartProduct.id));
@@ -69,7 +46,9 @@ function Summary() {
                 await axios.delete(`${apiUrl}/products/shoppingList/${cartProduct.id}`);
                 const response = await axios.get(`${apiUrl}/products/shoppingList`);
                 dispatch(loadCartList(response.data));
-            } catch (error) {}
+            } catch (error) {
+                // obsłuż błąd, jeśli chcesz
+            }
         }
 
         setTimeout(() => setRemovingId(null), 500);
@@ -85,7 +64,7 @@ function Summary() {
                         return (
                             <div className={styles.tile} key={idx}>
                                 <span className={styles.partInfo}>
-                                    {typeArray[idx]}: {item.name} - {item.price} zł
+                                    {TYPE_MAP[TYPE_KEYS[idx]]}: {item.name} - {item.price} zł
                                 </span>
                                 <button
                                     className={styles.removeButton}

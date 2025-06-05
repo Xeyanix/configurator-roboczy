@@ -6,16 +6,17 @@ import {
   loadCartList,
   setProductsLoadingState,
   addToLastViewed,
+  setConfigPart,
+  clearAllConfig,
 } from "../redux/appSlice";
 import { v4 as uuidv4 } from "uuid";
-import { useConfig } from "../context/ConfigContext";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-function ProductList({ filters }) { // <--- odbieramy filters!
+function ProductList({ filters }) {
   const loadingStatus = useSelector((state) => state.app.loadingStatus);
   const lastViewedProducts = useSelector((state) => state.app.lastViewed);
+  const summaryConfig = useSelector((state) => state.app.summaryConfig); // <-- TYLKO REDUX
   const dispatch = useDispatch();
-
 
   const [allProducts, setAllProducts] = useState([]);
   const [motherboards, setMotherboards] = useState([]);
@@ -25,17 +26,6 @@ function ProductList({ filters }) { // <--- odbieramy filters!
   const [chargers, setChargers] = useState([]);
   const [gpus, setGpus] = useState([]);
   const [cases, setCases] = useState([]);
-
-  const {
-    selectedMotherboard, setSelectedMotherboard,
-    selectedProcessor, setSelectedProcessor,
-    selectedRAM, setSelectedRAM,
-    selectedSSD, setSelectedSSD,
-    selectedCharger, setSelectedCharger,
-    selectedGPU, setSelectedGPU,
-    selectedCase, setSelectedCase,
-    handleRebuild
-  } = useConfig();
 
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:10000";
 
@@ -52,7 +42,6 @@ function ProductList({ filters }) { // <--- odbieramy filters!
 
   // 2. FILTRUJ produkty wg filtrów i podziel na kategorie
   useEffect(() => {
-    // UWAGA! Zmień poniżej 'brand' na 'marka', jeśli w Twoich danych jest 'marka' a nie 'brand'!
     const markaKey = "brand";
     const typKey = "typ";
     const cenaKey = "price";
@@ -73,76 +62,49 @@ function ProductList({ filters }) { // <--- odbieramy filters!
     setCases(filtered.filter(p => p.type === "Cases"));
   }, [allProducts, filters]);
 
-  // Wybor i dodawanie jak miałeś
+  // Funkcja wyboru części
   const handleItemClick = async (product) => {
-    const newProduct = { ...product, id: uuidv4() };
     let type = "";
     switch (product.type || product.category || product.group) {
       case "Płyta główna":
       case "Motherboard":
-        type = "Płyta główna"; break;
+        type = "motherboard"; break;
       case "Procesor":
-        type = "Procesor"; break;
+        type = "processor"; break;
       case "RAM":
-        type = "RAM"; break;
+        type = "ram"; break;
       case "SSD":
-        type = "SSD"; break;
+        type = "ssd"; break;
       case "Charger":
-        type = "Charger"; break;
+        type = "charger"; break;
       case "GPU":
-        type = "GPU"; break;
+        type = "gpu"; break;
       case "Cases":
       case "Obudowa":
-        type = "Cases"; break;
+        type = "case"; break;
       default:
-        type = product.type || ""; break;
+        type = ""; break;
     }
-    const productWithType = { ...product, type };
+    if (!type) return;
 
-    switch (type) {
-      case "Płyta główna":
-        setSelectedMotherboard(productWithType); break;
-      case "Procesor":
-        setSelectedProcessor(productWithType); break;
-      case "RAM":
-        setSelectedRAM(productWithType); break;
-      case "SSD":
-        setSelectedSSD(productWithType); break;
-      case "Charger":
-        setSelectedCharger(productWithType); break;
-      case "GPU":
-        setSelectedGPU(productWithType); break;
-      case "Cases":
-        setSelectedCase(productWithType); break;
-      default:
-        break;
-    }
+    // Zapisz do Redux (podsumowanie)
+    dispatch(setConfigPart({ type, part: product }));
 
+    // Dodaj do koszyka na backend
+    const newProduct = { ...product, id: uuidv4() };
     await axios.post(`${apiUrl}/products/shoppingList/new`, newProduct);
     const shoppingListResponse = await axios.get(`${apiUrl}/products/shoppingList`);
     dispatch(loadCartList(shoppingListResponse.data));
+
+    // Dodaj do ostatnio oglądanych jeśli trzeba
     if (!lastViewedProducts.find(p => p.id === product.id)) {
       dispatch(addToLastViewed([...lastViewedProducts, product]));
     }
+  };
 
-    switch (product.type) {
-      case "Płyta główna":
-        setSelectedMotherboard(product); break;
-      case "Procesor":
-        setSelectedProcessor(product); break;
-      case "RAM":
-        setSelectedRAM(product); break;
-      case "SSD":
-        setSelectedSSD(product); break;
-      case "Charger":
-        setSelectedCharger(product); break;
-      case "GPU":
-        setSelectedGPU(product); break;
-      case "Cases":
-        setSelectedCase(product); break;
-      default:
-        break;
-    }
+  // Usuwanie całej konfiguracji
+  const handleRebuild = () => {
+    dispatch(clearAllConfig());
   };
 
   // Podpisy pod kafelkami
@@ -157,14 +119,15 @@ function ProductList({ filters }) { // <--- odbieramy filters!
   };
 
   // Sprawdzamy, czy wszystkie komponenty są wybrane
-  const allSelected = selectedMotherboard &&
-    selectedProcessor &&
-    selectedRAM &&
-    selectedSSD &&
-    selectedCharger &&
-    selectedGPU &&
-    selectedCase;
+  const allSelected = summaryConfig.motherboard &&
+    summaryConfig.processor &&
+    summaryConfig.ram &&
+    summaryConfig.ssd &&
+    summaryConfig.charger &&
+    summaryConfig.gpu &&
+    summaryConfig.case;
 
+  // Wyświetlanie wybranej części (po wyborze)
   function SelectedTile({ label, selected, onChange }) {
     if (!selected) return null;
     return (
@@ -181,6 +144,40 @@ function ProductList({ filters }) { // <--- odbieramy filters!
     );
   }
 
+  // Funkcja renderująca wybór komponentu
+  function renderStep(label, items, onSelect) {
+    return (
+      <>
+        <div className={styles.choosen}>Wybierz {label}:</div>
+        <div className={styles.productContainer}>
+          <div className={styles.leftColumn}>
+            {items.length > 0 ? (
+              items.map(item => (
+                <div key={item.id} className={styles.productsListNames}>
+                  {item.image && (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className={styles.productImage}
+                    />
+                  )}
+
+                  <h3>{item.name}</h3>
+                  <p>Cena: {item.price} zł</p>
+                  <button className={styles.myButton} onClick={() => onSelect(item)}>
+                    Dodaj do koszyka
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p>Ładowanie {label.toLowerCase()}...</p>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <div className={styles.App}>
       <header className={styles.AppHeader}>
@@ -191,76 +188,37 @@ function ProductList({ filters }) { // <--- odbieramy filters!
         )}
 
         <div className={styles.smallerFont}>
-          {!selectedMotherboard
+          {!summaryConfig.motherboard
             ? renderStep("płytę główną", motherboards, handleItemClick)
-            : <SelectedTile label={labels.motherboard} selected={selectedMotherboard} onChange={() => setSelectedMotherboard(null)} />
+            : <SelectedTile label={labels.motherboard} selected={summaryConfig.motherboard} onChange={() => dispatch(setConfigPart({ type: "motherboard", part: null }))} />
           }
-
-          {selectedMotherboard && !selectedProcessor
+          {summaryConfig.motherboard && !summaryConfig.processor
             ? renderStep("procesor", processors, handleItemClick)
-            : selectedProcessor && <SelectedTile label={labels.processor} selected={selectedProcessor} onChange={() => setSelectedProcessor(null)} />
+            : summaryConfig.processor && <SelectedTile label={labels.processor} selected={summaryConfig.processor} onChange={() => dispatch(setConfigPart({ type: "processor", part: null }))} />
           }
-
-          {selectedMotherboard && selectedProcessor && !selectedRAM
+          {summaryConfig.processor && !summaryConfig.ram
             ? renderStep("pamięć RAM", rams, handleItemClick)
-            : selectedRAM && <SelectedTile label={labels.ram} selected={selectedRAM} onChange={() => setSelectedRAM(null)} />
+            : summaryConfig.ram && <SelectedTile label={labels.ram} selected={summaryConfig.ram} onChange={() => dispatch(setConfigPart({ type: "ram", part: null }))} />
           }
-
-          {selectedMotherboard && selectedProcessor && selectedRAM && !selectedSSD
+          {summaryConfig.ram && !summaryConfig.ssd
             ? renderStep("dysk SSD", ssds, handleItemClick)
-            : selectedSSD && <SelectedTile label={labels.ssd} selected={selectedSSD} onChange={() => setSelectedSSD(null)} />
+            : summaryConfig.ssd && <SelectedTile label={labels.ssd} selected={summaryConfig.ssd} onChange={() => dispatch(setConfigPart({ type: "ssd", part: null }))} />
           }
-
-          {selectedMotherboard && selectedProcessor && selectedRAM && selectedSSD && !selectedCharger
+          {summaryConfig.ssd && !summaryConfig.charger
             ? renderStep("zasilacz", chargers, handleItemClick)
-            : selectedCharger && <SelectedTile label={labels.charger} selected={selectedCharger} onChange={() => setSelectedCharger(null)} />
+            : summaryConfig.charger && <SelectedTile label={labels.charger} selected={summaryConfig.charger} onChange={() => dispatch(setConfigPart({ type: "charger", part: null }))} />
           }
-
-          {selectedMotherboard && selectedProcessor && selectedRAM && selectedSSD && selectedCharger && !selectedGPU
+          {summaryConfig.charger && !summaryConfig.gpu
             ? renderStep("GPU", gpus, handleItemClick)
-            : selectedGPU && <SelectedTile label={labels.gpu} selected={selectedGPU} onChange={() => setSelectedGPU(null)} />
+            : summaryConfig.gpu && <SelectedTile label={labels.gpu} selected={summaryConfig.gpu} onChange={() => dispatch(setConfigPart({ type: "gpu", part: null }))} />
           }
-
-          {selectedMotherboard && selectedProcessor && selectedRAM && selectedSSD && selectedCharger && selectedGPU && !selectedCase
+          {summaryConfig.gpu && !summaryConfig.case
             ? renderStep("obudowę", cases, handleItemClick)
-            : selectedCase && <SelectedTile label={labels.case} selected={selectedCase} onChange={() => setSelectedCase(null)} />
+            : summaryConfig.case && <SelectedTile label={labels.case} selected={summaryConfig.case} onChange={() => dispatch(setConfigPart({ type: "case", part: null }))} />
           }
         </div>
       </header>
     </div>
-  );
-}
-
-function renderStep(label, items, onSelect) {
-  return (
-    <>
-      <div className={styles.choosen}>Wybierz {label}:</div>
-      <div className={styles.productContainer}>
-        <div className={styles.leftColumn}>
-          {items.length > 0 ? (
-            items.map(item => (
-              <div key={item.id} className={styles.productsListNames}>
-                {item.image && (
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className={styles.productImage}
-                  />
-                )}
-
-                <h3>{item.name}</h3>
-                <p>Cena: {item.price} zł</p>
-                <button className={styles.myButton} onClick={() => onSelect(item)}>
-                  Dodaj do koszyka
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>Ładowanie {label.toLowerCase()}...</p>
-          )}
-        </div>
-      </div>
-    </>
   );
 }
 

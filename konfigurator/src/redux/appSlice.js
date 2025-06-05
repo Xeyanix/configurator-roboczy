@@ -1,9 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// --- STAŁE ---
+const summaryInitial = {
+    motherboard: null,
+    processor: null,
+    ram: null,
+    ssd: null,
+    charger: null,
+    gpu: null,
+    case: null,
+};
+
 function saveCartToStorage(cart) {
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
+// --- DODAJ TO: Ładowanie summaryConfig z localStorage ---
+function loadSummaryFromStorage() {
+    try {
+        const data = localStorage.getItem("summaryConfig");
+        return data ? JSON.parse(data) : { ...summaryInitial };
+    } catch {
+        return { ...summaryInitial };
+    }
+}
+
+// --- DODAJ TO: Zapisywanie summaryConfig do localStorage ---
+function saveSummaryToStorage(summaryConfig) {
+    localStorage.setItem("summaryConfig", JSON.stringify(summaryConfig));
+}
+
+// --- INICJALNY STAN ---
 const initialState = {
     productsList: [],
     filteredProducts: [],
@@ -11,6 +38,7 @@ const initialState = {
     lastViewed: [],
     currentPrice: [],
     loadingStatus: "idle",
+    summaryConfig: loadSummaryFromStorage(), // <--- POBIERA Z LOCALSTORAGE!
 };
 
 export const appSlice = createSlice({
@@ -51,6 +79,21 @@ export const appSlice = createSlice({
             state.cart = state.cart.filter(item => item.id !== action.payload);
             saveCartToStorage(state.cart);
         },
+        // --- PODSUMOWANIE (summaryConfig) ---
+        setConfigPart: (state, action) => {
+            const { type, part } = action.payload;
+            state.summaryConfig[type] = part;
+            saveSummaryToStorage(state.summaryConfig); // <--- ZAPIS
+        },
+        clearConfigPart: (state, action) => {
+            const { type } = action.payload;
+            state.summaryConfig[type] = null;
+            saveSummaryToStorage(state.summaryConfig); // <--- ZAPIS
+        },
+        clearAllConfig: (state) => {
+            state.summaryConfig = { ...summaryInitial };
+            saveSummaryToStorage(state.summaryConfig); // <--- ZAPIS
+        },
     },
 });
 
@@ -64,6 +107,9 @@ export const {
     addToLastViewed,
     addToCart,
     removeFromCart,
+    setConfigPart,
+    clearConfigPart,
+    clearAllConfig,
 } = appSlice.actions;
 
 export default appSlice.reducer;

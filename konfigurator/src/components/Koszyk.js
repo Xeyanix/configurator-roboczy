@@ -5,47 +5,32 @@ import {
     loadCartList,
     setProductsLoadingState,
     clearCart,
+    clearConfigPart
 } from "../redux/appSlice";
 import axios from "axios";
 import { Link } from 'react-router-dom';
 import CircularProgress from "@mui/material/CircularProgress";
-import { useConfig } from "../context/ConfigContext";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-
-const TYPE_MAP = {
-    "Płyta główna": "Płyta główna",
-    "Procesor": "Procesor",
-    "RAM": "RAM",
-    "SSD": "SSD",
-    "Zasilacz": "Charger",
-    "Charger": "Charger",
-    "GPU": "GPU",
-    "Obudowa": "Cases",
-    "Cases": "Cases"
+// Mapowanie z polskiego na reduxowy klucz summaryConfig
+const PRODUCT_TYPE_TO_KEY = {
+    "Płyta główna": "motherboard",
+    "Procesor": "processor",
+    "RAM": "ram",
+    "SSD": "ssd",
+    "Charger": "charger",
+    "Zasilacz": "charger",
+    "GPU": "gpu",
+    "Cases": "case",
+    "Obudowa": "case",
 };
-
-function mapType(type) {
-    return TYPE_MAP[type] || type;
-}
-// <--
 
 function Koszyk() {
     const cart = useSelector((state) => state.app.cart);
     const loadingStatus = useSelector((state) => state.app.loadingStatus);
+    const summaryConfig = useSelector((state) => state.app.summaryConfig);
     const [deletedItemId, setDeletedItemId] = useState(null);
     const dispatch = useDispatch();
-    const {
-        handleRebuild,
-        clearSelectedPart,
-        selectedMotherboard,
-        selectedProcessor,
-        selectedRAM,
-        selectedSSD,
-        selectedCharger,
-        selectedGPU,
-        selectedCase,
-    } = useConfig();
 
     const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:10000";
 
@@ -65,36 +50,24 @@ function Koszyk() {
         fetchCart();
     }, [dispatch, apiUrl]);
 
-    function getTypeForProduct(product) {
-        const parts = [
-            { item: selectedMotherboard, type: "Płyta główna" },
-            { item: selectedProcessor, type: "Procesor" },
-            { item: selectedRAM, type: "RAM" },
-            { item: selectedSSD, type: "SSD" },
-            { item: selectedCharger, type: "Charger" },
-            { item: selectedGPU, type: "GPU" },
-            { item: selectedCase, type: "Cases" },
-        ];
-        for (const part of parts) {
-            if (part.item && part.item.name === product.name) {
-                return part.type;
-            }
-        }
-        return null;
-    }
-
     const handleRemoveItem = async (product) => {
+        // Natychmiast czyść podsumowanie!
+        Object.entries(summaryConfig).forEach(([key, value]) => {
+            if (value && value.name === product.name) {
+                dispatch(clearConfigPart({ type: key }));
+            }
+        });
+
         try {
             setDeletedItemId(product.id);
             dispatch(setProductsLoadingState("RemovingItem"));
+
             await axios.delete(`${apiUrl}/products/shoppingList/${product.id}`);
             const response = await axios.get(`${apiUrl}/products/shoppingList`);
             dispatch(loadCartList(response.data));
             dispatch(setProductsLoadingState("success"));
             setDeletedItemId(null);
 
-            console.log("Przekazuję do clearSelectedPart:", { ...product, type: mapType(product.type) });
-            clearSelectedPart({ ...product, type: mapType(product.type) });
         } catch (error) {
             console.error(error);
             dispatch(setProductsLoadingState("error"));
@@ -102,14 +75,18 @@ function Koszyk() {
     };
 
 
-
     const handleRemoveAll = async () => {
+
+        Object.keys(PRODUCT_TYPE_TO_KEY).forEach(typeKey => {
+            const key = PRODUCT_TYPE_TO_KEY[typeKey];
+            dispatch(clearConfigPart({ type: key }));
+        });
         try {
             dispatch(setProductsLoadingState("RemovingItem"));
             await axios.delete(`${apiUrl}/products/shoppingList`);
             dispatch(clearCart());
             dispatch(setProductsLoadingState("success"));
-            handleRebuild();
+
         } catch (error) {
             console.error(error);
             dispatch(setProductsLoadingState("error"));
@@ -129,8 +106,6 @@ function Koszyk() {
             </button>
         </div>
     ));
-
-    console.log('Cart:', cart);
 
     return (
         <div className={styles.App}>
