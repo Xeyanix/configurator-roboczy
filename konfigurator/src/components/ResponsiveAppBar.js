@@ -124,7 +124,7 @@ function ResponsiveAppBar() {
               position: "absolute",
               top: "40px",
               right: 0,
-              width: "260px",
+              width: "350px",
               background: "#232323",
               color: "#fff",
               border: "1px solid #aaa",
@@ -142,74 +142,78 @@ function ResponsiveAppBar() {
               <div>Koszyk jest pusty</div>
             ) : (
               <>
-                <ul style={{ padding: 0, margin: 0, listStyle: "none" }}>
-                  {cart.map((item) => (
-                    <li key={item.id} style={{
-                      marginBottom: "6px",
-                      fontSize: 15,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between"
-                    }}>
-                      <span>
-                        {item.name} <span style={{ fontWeight: 600 }}>{item.price} zł</span>
-                      </span>
-                      <button
-                        onClick={() => handleRemoveItem(item.id)}
+                <ul style={{ paddingLeft: 18, margin: 0 }}>
+                  {cart.map((item, idx) => (
+                    <React.Fragment key={item.id}>
+                      <li
                         style={{
-                          background: "none",
-                          border: "none",
-                          color: "#ff5555",
-                          fontSize: 18,
-                          cursor: "pointer",
-                          marginLeft: 8,
+                          marginBottom: 4,
+                          fontSize: 15,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          paddingBottom: 4,
                         }}
-                        title="Usuń z koszyka"
                       >
-                        ×
-                      </button>
-                    </li>
+                        <span>{item.name}</span>
+                        <span style={{ fontWeight: 600, marginLeft: 8 }}>{item.price} zł</span>
+                      </li>
+                      {idx < cart.length - 1 && (
+                        <div
+                          style={{
+                            borderBottom: "1px solid #444",
+                            margin: "2px 0 4px 0",
+                            width: "100%"
+                          }}
+                        />
+                      )}
+                    </React.Fragment>
                   ))}
                 </ul>
-                <button
-                  onClick={handleRemoveAll}
+                {/* Suma na dole */}
+                <div
                   style={{
-                    width: "100%",
-                    background: "#ff5555",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "8px",
-                    padding: "7px 0",
+                    borderTop: "1px solid #555",
+                    paddingTop: 8,
+                    marginTop: 10,
                     fontWeight: "bold",
-                    fontSize: 15,
-                    cursor: "pointer",
-                    margin: "10px 0 5px 0"
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 16
                   }}
                 >
-                  Usuń wszystko
-                </button>
+                  <span>Suma:</span>
+                  <span>
+                    {cart.reduce((acc, p) => acc + (p.price || 0), 0)} zł
+                  </span>
+                </div>
               </>
             )}
-            <div style={{ marginTop: "13px", textAlign: "center" }}>
-              <Link
-                to="/koszyk"
-                style={{
-                  display: "inline-block",
-                  background: "#ffd700",
-                  color: "#232323",
-                  padding: "7px 18px",
-                  borderRadius: "8px",
-                  textDecoration: "none",
-                  fontWeight: "bold",
-                  fontSize: 15,
-                }}
-                onClick={() => setShowMiniCart(false)}
-              >
-                Przejdź do koszyka
-              </Link>
-            </div>
+            {cart.length > 0 && (
+              <div style={{ marginTop: "13px", textAlign: "center" }}>
+                <Link
+                  to="/koszyk"
+                  style={{
+                    display: "inline-block",
+                    background: "#ffd700",
+                    color: "#232323",
+                    padding: "7px 18px",
+                    borderRadius: "8px",
+                    textDecoration: "none",
+                    fontWeight: "bold",
+                    fontSize: 15,
+                  }}
+                  onClick={() => setShowMiniCart(false)}
+                >
+                  Przejdź do koszyka
+                </Link>
+              </div>
+            )}
           </div>
         )}
+
+
+
       </div>
     </div>
   );

@@ -80,7 +80,7 @@ router.get("/shoppingList", (req, res) => {
     res
       .status(200)
       .json(
-        plainList.map((product) => ({ id: product.id, name: product.name, price: product.price }))//tu dodajemy dodatkowe rzeczy w tablicy produktow
+        plainList.map((product) => ({ id: product.id, name: product.name, price: product.price, type: product.type  }))
       );
   }, 1000);
 });
@@ -93,10 +93,19 @@ router.post("/shoppingList/new", jsonParser, (req, res) => {
 });
 
 router.delete("/shoppingList/:shoppingListId", jsonParser, (req, res) => {
-  setTimeout(() => {
-    res.status(200).json(req.body);
-  }, 1000);
-});
+  const id = req.params.shoppingListId;
+  const idx = shoppingList.findIndex(product => product.id === id);
+  if (idx !== -1) {
+    const removed = shoppingList.splice(idx, 1)[0];
+    setTimeout(() => {
+      res.status(200).json(removed);
+    }, 1000);
+  } else {
+    setTimeout(() => {
+      res.status(404).json({ error: "Product not found in shoppingList" });
+    }, 1000);
+  }
+});;
 
 router.delete("/shoppingList", (req, res) => {
   shoppingList = []; // Czyszczenie całej listy zakupów
@@ -238,17 +247,6 @@ router.param("id", (req, res, next, id) => {
 });
 
 
-router.param("shoppingListId", (req, res, next, id) => {
-  req.shoppingList = shoppingList;
-  if (req.method === "DELETE") {
-    req.productToDelete = shoppingList.find((product) => product.id === id);
-    shoppingList = shoppingList.filter((product) => product.id !== id);
-    req.shoppingList = shoppingList;
-  }
-
-  next();
-
-});
 
 router.param("/new", (req, res, next, id) => {
   next();

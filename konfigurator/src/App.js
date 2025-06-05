@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './context/Context';
 import Summary from "./components/Summary";
 import Dashboard from './components/Dashboard';
 import Filtry from './components/Filtry';
+import ReactDOM from "react-dom/client"; 
 
 function App() {
   const { loggedInUser } = useAuth();
