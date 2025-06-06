@@ -4,16 +4,17 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "devStart": "nodemon server.js"
+    "start": "node xkomScraper.js",
+    "devStart": "nodemon server.js",
+    "dev": "concurrently \"node xkomScraper.js\" \"nodemon server.js\""
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "body-parser": "^1.20.2"
+    "express": "^4.18.2",
+    "puppeteer": "^24.10.0"
   },
   "devDependencies": {
-    "nodemon":  "^2.0.16"
-   
+    "nodemon": "^2.0.16"
   }
 }
