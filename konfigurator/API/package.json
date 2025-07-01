@@ -4,9 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node xkomScraper.js",
-    "devStart": "nodemon server.js",
-    "dev": "concurrently \"node xkomScraper.js\" \"nodemon server.js\""
+    "devStart": "nodemon server.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
