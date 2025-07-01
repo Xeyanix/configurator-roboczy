@@ -1,5 +1,3 @@
-// API/xkomScraper.js
-
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
@@ -10,11 +8,8 @@ function convertJsonToJs(jsonPath) {
     const jsonData = fs.readFileSync(jsonPath, 'utf-8');
     const products = JSON.parse(jsonData);
 
-    // Nazwa zmiennej: NAZWA PLIKU bez rozszerzenia
     const fileBaseName = path.basename(jsPath, '.js'); // np. products_PłytagłównaSocket1700
-    // Zamiana "klucz": na klucz:
     let str = JSON.stringify(products, null, 2).replace(/"(\w+)"\s*:/g, '$1:');
-    // Eksport jako CommonJS, nazwa zmiennej dynamiczna
     const jsContent = `const ${fileBaseName} = ${str};\n\nmodule.exports = ${fileBaseName};\n`;
     fs.writeFileSync(jsPath, jsContent, 'utf-8');
     console.log(`Plik JS utworzony: ${jsPath}`);
@@ -26,19 +21,17 @@ const saveProducts = (products, type) => {
     if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath, { recursive: true });
     }
-    
+
     const jsonPath = path.join(dirPath, `products_${type.replace(/\s/g, '')}.json`);
     const jsPath = path.join(dirPath, `products_${type.replace(/\s/g, '')}.js`);
 
-    // Tymczasowo zapisz do JSON (potrzebne do konwersji)
     fs.writeFileSync(jsonPath, JSON.stringify(products, null, 2));
     console.log(`Tymczasowo zapisano ${products.length} produktów do: ${jsonPath}`);
 
-    // Wczytaj istniejące dane z pliku JS, jeśli istnieje
     let existingProducts = [];
     if (fs.existsSync(jsPath)) {
         try {
-            delete require.cache[require.resolve(jsPath)];  // Wyczyść cache require
+            delete require.cache[require.resolve(jsPath)];
             existingProducts = require(jsPath);
             if (!Array.isArray(existingProducts) && existingProducts.default) {
                 existingProducts = existingProducts.default;
@@ -49,22 +42,18 @@ const saveProducts = (products, type) => {
         }
     }
 
-    // Połącz nowe i istniejące dane, usuń duplikaty wg id
     const combined = [...existingProducts, ...products];
     const uniqueProducts = combined.filter((prod, index, self) =>
         index === self.findIndex(p => p.id === prod.id)
     );
 
-    // Konwersja do formatu JS
     let str = JSON.stringify(uniqueProducts, null, 2).replace(/"(\w+)"\s*:/g, '$1:');
     const fileBaseName = path.basename(jsPath, '.js');
     const jsContent = `const ${fileBaseName} = ${str};\n\nmodule.exports = ${fileBaseName};\n`;
 
-    // Zapisz scalony plik JS
     fs.writeFileSync(jsPath, jsContent, 'utf-8');
     console.log(`Zapisano scalony plik JS z ${uniqueProducts.length} produktami: ${jsPath}`);
 
-    // Usuń plik JSON
     try {
         fs.unlinkSync(jsonPath);
         console.log(`Usunięto plik JSON: ${jsonPath}`);
@@ -73,24 +62,35 @@ const saveProducts = (products, type) => {
     }
 };
 
-// === Funkcja scrapująca jedną kategorię ===
 const scrapeCategory = async (categoryUrl, type) => {
     const browser = await puppeteer.launch({ headless: false, defaultViewport: null });
     const page = await browser.newPage();
 
-    await page.goto(categoryUrl, { waitUntil: 'domcontentloaded' });
+    await page.goto(categoryUrl, { waitUntil: 'networkidle2' });
     console.log('Załadowano stronę:', categoryUrl);
+    await clickConsentButton(page);
 
-    // Akceptuj cookies (jeśli trzeba)
-    try {
-        await page.waitForSelector(
-            'button#onetrust-accept-btn-handler, button[data-testid="accept-cookies-button"]',
-            { timeout: 3000 }
-        );
-        await page.click('button#onetrust-accept-btn-handler, button[data-testid="accept-cookies-button"]');
-        console.log('Zaakceptowano cookies!');
-    } catch (e) {
-        console.log('Nie było popupu cookies (git!)');
+    async function clickConsentButton(page) {
+        try {
+            // poczekaj chwilę na pojawienie się popupu
+            await page.waitForSelector('button', { timeout: 5000 });
+
+            const buttons = await page.$$('button');
+
+            for (const button of buttons) {
+                const text = await page.evaluate(el => el.innerText.trim(), button);
+                if (text === 'W porządku') {
+                    await button.evaluate(btn => btn.scrollIntoView());
+                    await button.click();
+                    console.log('Kliknięto przycisk "W porządku"');
+                    return;
+                }
+            }
+
+            console.log('Nie znaleziono przycisku "W porządku".');
+        } catch (error) {
+            console.log('Błąd przy obsłudze cookies:', error.message);
+        }
     }
 
     // Czekaj na produkty
@@ -173,7 +173,6 @@ async function main() {
         { url: 'https://www.x-kom.pl/g-5/c/89-dyski-twarde-hdd-i-ssd.html?page=15', type: 'Dysk SSD' },
 
 
-        // --- Obudowy ---
         // --- Obudowy ---
         { url: 'https://www.x-kom.pl/g-5/c/388-obudowy-komputerowe.html?page=1', type: 'Obudowa' },
         { url: 'https://www.x-kom.pl/g-5/c/388-obudowy-komputerowe.html?page=2', type: 'Obudowa' },
@@ -260,10 +259,21 @@ async function main() {
     ];
 
 
-    for (const cat of categories) {
-        const products = await scrapeCategory(cat.url, cat.type);
-        saveProducts(products, cat.type);
+   let allProducts = [];
+    for (const category of categories) {
+        try {
+            console.log(`Scrapowanie kategorii: ${category.type}, URL: ${category.url}`);
+            const products = await scrapeCategory(category.url, category.type);
+            allProducts = allProducts.concat(products);
+            saveProducts(allProducts, category.type);
+            // Mała pauza, żeby nie obciążać serwera
+            await new Promise(r => setTimeout(r, 2000));
+        } catch (err) {
+            console.error(`Błąd podczas scrapowania ${category.url}:`, err.message);
+        }
     }
+
+    console.log(`Zakończono scrapowanie. Łącznie produktów: ${allProducts.length}`);
 }
 
 // Eksport do uruchamiania z innych plików

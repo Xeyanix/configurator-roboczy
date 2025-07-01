@@ -9,8 +9,25 @@
     border-radius: 18px;
     padding: 32px 24px;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.07);
-    width: 600px;
+    width: 100%; 
     margin: 0 auto;
+}
+
+
+@media (max-width: 640px) {
+    .summaryBox {
+        padding: 24px 16px;
+    }
+
+    .tile {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .removeButton {
+        margin-left: 0;
+        margin-top: 8px;
+    }
 }
 
 .summaryTitle {
