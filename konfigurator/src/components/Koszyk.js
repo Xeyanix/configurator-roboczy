@@ -32,7 +32,11 @@ function Koszyk() {
     const [deletedItemId, setDeletedItemId] = useState(null);
     const dispatch = useDispatch();
 
-    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:10000";
+    const apiUrl =
+        process.env.REACT_APP_API_URL ||
+        (window.location.hostname === "localhost"
+            ? "http://localhost:10000"
+            : "https://my-node-api-7rco.onrender.com");
 
     useEffect(() => {
         const fetchCart = async () => {
@@ -95,17 +99,20 @@ function Koszyk() {
 
     const totalPrice = cart.reduce((total, p) => total + p.price, 0);
 
-    const AddedItem = cart.map((product) => (
-        <div className={styles.productInfo} key={product.id}>
-            {product.name} - {product.price} zł
-            <button
-                className={styles.myButton}
-                onClick={() => handleRemoveItem(product)}
-            >
-                Usuń
-            </button>
-        </div>
-    ));
+    const AddedItem = () => {
+        return cart.map((product) => (
+            <div className={styles.productInfo} key={product.id}>
+                <span>{product.name} - {product.price} zł</span>
+                <button
+                    className={styles.myButton}
+                    onClick={() => handleRemoveItem(product)}
+                >
+                    Usuń
+                </button>
+            </div>
+        ));
+    };
+
 
     return (
         <div className={styles.App}>
@@ -141,10 +148,14 @@ function Koszyk() {
                 )}
                 {cart.length > 0 && (
                     <div className={styles.cart}>
-                        <ol className={styles.cartList}>{AddedItem}</ol>
+                        <div>
+                            <div>
+                                <AddedItem />
+                            </div>
+                        </div>
                         <div>
                             <p>Łącznie {totalPrice} zł</p>
-                            <button className={styles.myButton} onClick={handleRemoveAll}>
+                            <button className={styles.myButtonAll} onClick={handleRemoveAll}>
                                 Usuń wszystko
                             </button>
                         </div>

@@ -62,7 +62,7 @@ function Summary() {
                     {parts.map((item, idx) => {
                         if (!item) return null;
                         return (
-                            <div className={styles.tile} key={idx}>
+                            <div className={styles.title} key={idx}>
                                 <span className={styles.partInfo}>
                                     {TYPE_MAP[TYPE_KEYS[idx]]}: {item.name} - {item.price} zł
                                 </span>

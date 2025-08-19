@@ -27,7 +27,12 @@ function ProductList({ filters }) {
   const [gpus, setGpus] = useState([]);
   const [cases, setCases] = useState([]);
 
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:10000";
+const apiUrl =
+  process.env.REACT_APP_API_URL ||
+  (window.location.hostname === "localhost"
+    ? "http://localhost:10000"
+    : "https://my-node-api-7rco.onrender.com");
+
 
   // 1. Pobierz WSZYSTKIE produkty raz na starcie
   useEffect(() => {
