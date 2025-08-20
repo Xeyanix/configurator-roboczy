@@ -7,7 +7,7 @@ function Filtry() {
 
     return (
       <div>
-        FILTRY
+        sortowanie
       </div>
     
     );

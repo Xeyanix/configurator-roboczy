@@ -13,6 +13,9 @@ import { v4 as uuidv4 } from "uuid";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 function ProductList({ filters }) {
+
+
+
   const loadingStatus = useSelector((state) => state.app.loadingStatus);
   const lastViewedProducts = useSelector((state) => state.app.lastViewed);
   const summaryConfig = useSelector((state) => state.app.summaryConfig); // <-- TYLKO REDUX
@@ -27,11 +30,13 @@ function ProductList({ filters }) {
   const [gpus, setGpus] = useState([]);
   const [cases, setCases] = useState([]);
 
-const apiUrl =
-  process.env.REACT_APP_API_URL ||
-  (window.location.hostname === "localhost"
-    ? "http://localhost:10000"
-    : "https://my-node-api-7rco.onrender.com");
+
+
+  const apiUrl =
+    process.env.REACT_APP_API_URL ||
+    (window.location.hostname === "localhost"
+      ? "http://localhost:10000"
+      : "https://my-node-api-7rco.onrender.com");
 
 
   // 1. Pobierz WSZYSTKIE produkty raz na starcie
@@ -39,23 +44,31 @@ const apiUrl =
     dispatch(setProductsLoadingState("Loading"));
     axios.get(`${apiUrl}/products`)
       .then(res => {
+        console.log("Pobrane produkty:", res.data);
         setAllProducts(res.data || []);
         dispatch(setProductsLoadingState("success"));
       })
       .catch(() => dispatch(setProductsLoadingState("error")));
   }, [apiUrl, dispatch]);
 
-  // 2. FILTRUJ produkty wg filtrów i podziel na kategorie
+
   useEffect(() => {
-    const markaKey = "brand";
-    const typKey = "typ";
-    const cenaKey = "price";
+
 
     const filtered = allProducts.filter(prod => {
-      if (filters && filters.marki && filters.marki.length && !filters.marki.includes(prod[markaKey])) return false;
-      if (filters && filters.typ && prod[typKey] !== filters.typ) return false;
-      if (filters && filters.cena && (prod[cenaKey] < filters.cena[0] || prod[cenaKey] > filters.cena[1])) return false;
-      return true;
+      const socket = prod.specs?.socket?.trim().toUpperCase() || "";
+      const formFactor = prod.specs?.form_factor?.trim().toUpperCase() || "";
+      const memoryType = prod.specs?.memory_type?.trim().toUpperCase() || "";
+
+      const cpuFilter = (filters?.cpu || []).map(f => f.trim().toUpperCase());
+      const formFactorFilter = (filters?.formFactor || []).map(f => f.trim().toUpperCase());
+      const memoryFilter = (filters?.memory || []).map(f => f.trim().toUpperCase());
+
+      const cpuMatch = cpuFilter.length === 0 || cpuFilter.includes(socket);
+      const formFactorMatch = formFactorFilter.length === 0 || formFactorFilter.includes(formFactor);
+      const memoryMatch = memoryFilter.length === 0 || memoryFilter.includes(memoryType);
+      const result = cpuMatch && formFactorMatch && memoryMatch;
+      return result;
     });
 
     setMotherboards(filtered.filter(p => p.type === "Płyta główna"));
@@ -66,6 +79,7 @@ const apiUrl =
     setGpus(filtered.filter(p => p.type === "GPU"));
     setCases(filtered.filter(p => p.type === "Cases"));
   }, [allProducts, filters]);
+
 
   // Funkcja wyboru części
   const handleItemClick = async (product) => {
@@ -168,6 +182,8 @@ const apiUrl =
                   )}
 
                   <h3>{item.name}</h3>
+                  <p>Cena: {item.price} zł</p>
+                  <p>socket: {item.specs.socket}</p>
                   <p>Cena: {item.price} zł</p>
                   <button className={styles.myButton} onClick={() => onSelect(item)}>
                     Dodaj do koszyka

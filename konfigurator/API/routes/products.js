@@ -27,13 +27,19 @@ router.get("/", (req, res) => {
       id: motherboard.id,
       name: motherboard.name,
       price: motherboard.price,
-      type: 'Płyta główna', 
+      type: 'Płyta główna',
+      specs: {
+        socket: motherboard.specs.socket,
+        chipset: motherboard.specs.chipset,
+        memory_type: motherboard.specs.memory_type,
+        form_factor: motherboard.specs.form_factor
+      }
     })),
     ...cpus.map((cpu) => ({
       id: cpu.id,
       name: cpu.name,
       price: cpu.price,
-      type: 'Procesor', 
+      type: 'Procesor',
     })),
     ...rams.map((ram) => ({
       id: ram.id,
@@ -80,7 +86,7 @@ router.get("/shoppingList", (req, res) => {
     res
       .status(200)
       .json(
-        plainList.map((product) => ({ id: product.id, name: product.name, price: product.price, type: product.type  }))
+        plainList.map((product) => ({ id: product.id, name: product.name, price: product.price, type: product.type }))
       );
   }, 1000);
 });

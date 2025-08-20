@@ -10,6 +10,9 @@ function Dashboard() {
   const [scrollPosition] = useState(0);
   const { login, loggedInUser } = useAuth();
   const [listViewed, setListViewed] = useState([]);
+  
+  // ← Add this state for filters
+  const [filters, setFilters] = useState({ cpu: [], formFactor: [], memory: [] });
 
   useEffect(() => {
     window.scrollTo({
@@ -28,11 +31,10 @@ function Dashboard() {
   return (
     <div className={styles.appWrapper}>
       <div className={styles.columnsWrapper}>
-        <Filters
-         
-        />
+        <Filters onFilterChange={setFilters} />
+  
         <ProductList
-         
+          filters={filters}
           dodawanie={addToCart}
         />
       </div>
