@@ -6,176 +6,192 @@
   margin-left: 30px;
   transition: transform 0.2s;
 
+  &:hover {
+    transform: scale(1.25);
+  }
 }
-
-.BackIcon:hover {
-  transform: scale(1.25);
-}
-
 
 .App {
-  display: fixed;
   width: 100%;
+  min-height: 100vh;
   text-align: center;
-  justify-content: center;
-  align-items: center;
-  background-color: #1f1f1f;
+  background-color: rgba(15, 23, 42, .85);
   font-size: calc(10px + 2vmin);
   color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 40px;
 }
-
 
 .AppHeader {
   display: flex;
   flex-direction: column;
-  background-color: #1f1f1f;
-  min-height: 90%;
   align-items: center;
   justify-content: flex-start;
-  border: 1px solid black;
+
+  border: none;
   font-size: calc(10px + 2vmin);
-  // overflow-x: auto;
-  height: calc(100vh - 100px);
+  height: auto;
   color: rgb(37, 216, 79);
   width: 100%;
-  overflow-x: auto;
+  max-width: 1200px;
+  padding: 20px;
 }
 
-
-
-
-
-.smallerFont {
-  overflow-x: auto;
-  font-size: 12px;
-  max-width: 100%;
-}
-
+/* === KOSZYK === */
 .cart {
-  background-color: rgb(53, 48, 48);
-  border: 1px solid #5c5656;
+
+  background-color: #1f1f1f;
+  border: 1px solid rgba(33, 74, 132, 0.15);
   width: 95%;
-  border-radius: 5px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-
-
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  color: white;
 }
 
 .cartList {
-  margin: 10px;
   display: flex;
-  justify-content: flex-start;
-  margin: 10px;
   flex-direction: column;
-  align-items: flex-start;
+  gap: 12px;
+  margin-top: 10px;
 }
 
-.whiteText {
-  color: white;
-  transition: color 0.3s ease;
-}
-
-.whiteText:hover {
-  color: rgba(255, 255, 0, 0.871);
-}
-
+/* === KARTA PRODUKTU === */
 .productInfo {
   display: flex;
-  justify-content: space-between; // tekst po lewej, przycisk po prawej
+  justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid #ccc;
+
+  background-color: #1f1f1f;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #323232;
+    border-color: rgb(37, 216, 79);
+    box-shadow: 0 0 10px rgba(37, 216, 79, 0.25);
+  }
+
+  .productText {
+    color: #fff;
+    font-size: 14px;
+    max-width: 65%;
+    word-break: break-word;
+  }
+
+  .productPrice {
+    color: rgb(37, 216, 79);
+    font-weight: bold;
+    font-size: 15px;
+    white-space: nowrap;
+  }
 }
 
-.productText {
-  flex: 1; // zajmuje całą dostępną szerokość po lewej
-    justify-content: space-between; 
-}
-
-
+/* === PRZYCISKI === */
 .myButton {
   background: none;
-  border: none;
-  color: #ff5555;
-  padding: 8px 12px;
-  border-radius: 15px;
+  border: 1px solid rgb(37, 216, 79);
+  color: rgb(37, 216, 79);
+  padding: 8px 14px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
-}
+  transition: all 0.3s ease;
 
-.myButton:hover {
-  background: #ff5555;
-  color: #fff;
+  &:hover {
+    background: rgb(37, 216, 79);
+    color: #1f1f1f;
+    box-shadow: 0 0 8px rgba(37, 216, 79, 0.5);
+  }
 }
 
 .myButtonAll {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px;
-  border-radius: 15px;
+  background-color: rgb(37, 216, 79);
+  color: #1f1f1f;
+  padding: 10px 18px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #24b45b;
+    box-shadow: 0 0 12px rgba(37, 216, 79, 0.5);
+  }
 }
 
+/* Pusty koszyk */
 .cartIsEmpty {
-  color: white;
-  background-color: #5c5656;
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px;
-  border-radius: 5px;
+  color: #aaa;
+  background-color: #2a2a2a;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  padding: 18px;
+  margin: 15px 0;
+  border-radius: 12px;
+  text-align: center;
 }
 
-
+/* Nazwy produktów */
 .productsCartNames {
   color: white;
   cursor: pointer;
   position: relative;
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 1.5;
   word-break: break-word;
+
+  &::after {
+    content: attr(customTitle);
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    white-space: nowrap;
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
 }
 
-.productsCartNames::after {
-  content: attr(customTitle);
-  position: absolute;
-  bottom: 35px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 0.5rem;
-  background-color: #333;
-  color: #fff;
-  border-radius: 20px;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  white-space: nowrap;
-  box-shadow: 0 0 3px rgb(255, 255, 255);
-  font-size: 12px;
+/* 📱 RESPONSYWNOŚĆ */
+@media (max-width: 768px) {
+  .cart {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .productInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .productText {
+    max-width: 100%;
+  }
+
+  .myButton,
+  .myButtonAll {
+    width: 100%;
+    text-align: center;
+  }
 }
-
-.productsCartNames:hover::after {
-  opacity: 1;
-  visibility: visible;
-}
-
-.productsCartNames::before {
-  content: "";
-  position: absolute;
-  border: solid;
-  border-color: lightgreen transparent;
-  border-width: 6px 6px 0 6px;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.productsCartNames:hover::before {
-  opacity: 1;
-}
-
-
-/* 📱 RESPONSYWNOŚĆ DLA MAŁYCH EKRANÓW */

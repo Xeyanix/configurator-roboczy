@@ -7,7 +7,7 @@ function Filtry() {
 
     return (
       <div>
-        sortowanie
+        sortowanie do przemyślenia
       </div>
     
     );

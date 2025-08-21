@@ -1,63 +1,177 @@
+/* === ResponsiveAppBar.module.scss === */
+$bg: #0f172a;
+$panel: #111827;
+$muted: #94a3b8;
+$accent: #22d3ee;
+$accent-2: #06b6d4;
+$ring: rgba(34, 211, 238, .35);
+$radius: 16px;
+$shadow: 0 10px 30px rgba(2, 6, 23, .6), inset 0 1px 0 rgba(255, 255, 255, .03);
+$transition: .25s ease;
+
+/* 🔹 Główny nagłówek */
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #222;
-    padding: 0 24px;
-    height: 60px;
-    position: relative;
+  position: relative;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: radial-gradient(1200px 500px at 10% -20%, rgba(34, 211, 238, .08), transparent),
+              linear-gradient(180deg, rgba(15, 23, 42, .9), rgba(15, 23, 42, .9));
+  border-bottom: 1px solid rgba(148, 163, 184, .12);
+  box-shadow: $shadow;
+  padding: 0 24px;
+  height: 64px;
+
+  backdrop-filter: blur(6px);
 }
 
+/* 🔹 Tytuł aplikacji */
 .title {
-    font-size: 30px;
-    color: #d4ff00;
-    text-align: center;
-    flex: 1;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    letter-spacing: 2px;
-    word-spacing: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  color: $accent;
+  text-align: center;
+  flex: 1;
+  letter-spacing: 1px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  text-shadow: 0 0 10px rgba(34, 211, 238, .3);
 }
 
+/* 🔹 Ikona powrotu */
 .BackIcon {
-    position: absolute;
-    left: 0;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin-left: 30px;
-    transition: transform 0.2s;
+  position: absolute;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  color: $accent;
+  transition: transform $transition, background $transition;
 
+  &:hover {
+    transform: scale(1.15);
+    background: rgba(34, 211, 238, .08);
+  }
 }
 
+/* 🔹 Ikona koszyka */
 .cartIcon {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.2s;
-    color: yellow;
-}
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: transform $transition, color $transition;
+  color: $accent;
 
+  &:hover {
+    transform: scale(1.1);
+    color: $accent-2;
+  }
 
-.cartIcon:hover {
-    transform: scale(1.25);
-}
-
-
-.BackIcon:hover {
-    transform: scale(1.25);
-}
-
-.miniCart {
+  /* 🔸 Licznik produktów */
+  .cartBadge {
     position: absolute;
-    top: 40px;
-    right: 0;
-    width: 260px;
-    background: #232323;
-    color: #fff;
-    border: 1px solid #aaa;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    z-index: 100;
-    padding: 15px;
-    min-height: 50px;
-    // itd.
+    top: -4px;
+    right: -6px;
+    background: linear-gradient(180deg, $accent, $accent-2);
+    color: #001018;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(6,182,212,.4);
+  }
+}
+
+/* 🔹 Mini koszyk */
+.miniCart {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 320px;
+  padding: 16px;
+
+  background: linear-gradient(180deg, rgba(17, 24, 39, .9), rgba(17, 24, 39, .85));
+  border: 1px solid rgba(148, 163, 184, .15);
+  border-radius: $radius;
+  box-shadow: $shadow;
+
+  color: #e5e7eb;
+  animation: fadeIn .25s ease;
+  backdrop-filter: blur(8px);
+  z-index: 3000;
+
+  /* Lista produktów w mini koszyku */
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(148,163,184,.1);
+
+      span {
+        font-size: 14px;
+        color: #f1f5f9;
+      }
+
+      .price {
+        font-weight: 700;
+        color: $accent;
+      }
+    }
+  }
+
+  /* Suma */
+  .total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 8px;
+    margin-top: 10px;
+    border-top: 1px solid rgba(148,163,184,.2);
+    font-weight: 700;
+    font-size: 15px;
+
+    .value {
+      color: $accent;
+    }
+  }
+
+  /* Przycisk przejścia do koszyka */
+  .goToCart {
+    display: inline-block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 0;
+    text-align: center;
+
+    background: linear-gradient(180deg, $accent, $accent-2);
+    color: #001018;
+    border-radius: calc($radius - 6px);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(6,182,212,.25);
+
+    transition: filter $transition, transform $transition;
+
+    &:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+/* Animacja pojawiania */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }

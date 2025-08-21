@@ -1,109 +1,286 @@
+/* ProductList.module.scss — spójne z Filters.module.scss */
+$bg: #0f172a;
+$panel: #111827;
+$muted: #94a3b8;
+$accent: #22d3ee;
+$accent-2: #06b6d4;
+$ring: rgba(34, 211, 238, .35);
+$radius: 16px;
+$shadow: 0 10px 30px rgba(2, 6, 23, .6), inset 0 1px 0 rgba(255, 255, 255, .03);
+$transition: .2s ease;
+
 .whiteText {
-  color: white;
-  transition: color 0.3s ease;
+  color: #f8fafc;
+  transition: color .25s ease;
+  font-weight: 500;
+
+  &:hover {
+    color: $accent;
+  }
 }
 
-.whiteText:hover {
-  color: rgba(255, 255, 0, 0.871);
-}
-
+/* kontener widoku listy (lokalne do modułu) */
 .App {
-  display: fixed;
+  display: flex;
+  /* fix: display: fixed -> flex */
+  flex-direction: column;
   width: 100%;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  background-color: #1f1f1f;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin: 0 auto;
+  padding: 12px;
+  align-items: stretch;
+  justify-content: flex-start;
+  background-color: transparent;
+  /* tło na poziomie strony */
+  font-size: clamp(14px, 1.6vmin, 16px);
+  color: #e5e7eb;
+}
+
+/* nagłówek sekcji listy */
+.AppHeader {
+  position: relative;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: rgba(15, 23, 42, .85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(148, 163, 184, .12);
+  border-radius: $radius;
+  padding: 16px;
+  color: #38bdf8;
+  width: 100%;
+  box-shadow: $shadow;
+  min-height: auto;
+  /* zamiast 90%/vh — stabilniej */
+  height: auto;
+  overflow: visible;
 }
 
 .selectedTitle {
-  color: white;
+  color: $accent;
+  font-weight: 600;
 }
 
-.AppHeader {
+/* wyróżniony tytuł/wybór */
+.choosen {
+  color: $accent;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  word-spacing: 6px;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
+  text-shadow: 0 0 12px rgba(34, 211, 238, .35);
+}
+
+/* siatka produktów */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+
+  /* domyślnie 2 kolumny na mniejszych ekranach */
+  >* {
+    grid-column: span 12;
+  }
+
+  @media (min-width: 520px) {
+    >* {
+      grid-column: span 6;
+    }
+  }
+
+  @media (min-width: 900px) {
+    >* {
+      grid-column: span 4;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    >* {
+      grid-column: span 3;
+    }
+  }
+}
+
+/* karta produktu */
+.productCard {
+  background: linear-gradient(180deg, rgba(17, 24, 39, .65), rgba(17, 24, 39, .5));
+  border: 1px solid rgba(148, 163, 184, .12);
+  border-radius: calc($radius - 6px);
+  padding: 14px;
+  box-shadow: $shadow;
   display: flex;
   flex-direction: column;
-  background-color: #1f1f1f;
-  min-height: 90%;
-  align-items: center;
-  justify-content: flex-start;
-  border: 1px solid black;
-  font-size: calc(10px + 2vmin);
-  // overflow-x: auto;
-  height: calc(100vh - 100px);
-  color: rgb(37, 216, 79);
-  width: 100%;
-  overflow-x: auto;
+  gap: 10px;
+  transition: transform $transition, border-color $transition, background $transition;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(148, 163, 184, .24);
+  }
 }
 
-.choosen {
-  color: yellow;
-  font-size: 42px;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  word-spacing: 8px;
-  letter-spacing: 2px;
-}
-
+/* obrazki produktów (Twoja klasa, ale „podrasowana”) */
 .productImage {
-  width: 120px;
-  height: auto;
-  margin-bottom: 8px;
-  border-radius: 8px;
+  width: 100%;
+  height: 160px;
+  margin-bottom: 6px;
+  border-radius: 12px;
   object-fit: contain;
-  background: #f9f9f9;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-}
+  background: #0b1220;
+  border: 1px dashed rgba(148, 163, 184, .18);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .15);
+  transition: transform .25s ease;
 
-.myButton {
-  background-color: #139a13;
-  color: white;
-  padding: 10px;
-  border-radius: 15px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.smallerFont {
-  font-size: 14px;
-  max-width: 100%;
-}
-
-
-.productsListNames {
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1.4;
-
-  li {
-    text-align: left;
-    padding: 0.5rem 1rem
+  &:hover {
+    transform: scale(1.03);
   }
 }
 
+/* meta: nazwa, producent, tagi */
+.productMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 
-/* 📱 RESPONSYWNOŚĆ DLA MAŁYCH EKRANÓW */
-
-@media (max-width: 768px) {
-  .AppHeader {
-    font-size: 12px;
-    padding: 10px;
+  .title {
+    color: #f1f5f9;
+    font-weight: 600;
+    line-height: 1.25;
   }
 
-  .myButton {
-    padding: 6px 10px;
+  .subtitle {
+    color: $muted;
     font-size: 13px;
   }
 
-  .smallerFont {
-    font-size: 12px;
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    .tag {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, .16);
+      background: rgba(2, 6, 23, .3);
+      color: #e2e8f0;
+    }
+  }
+}
+
+/* cena + działania */
+.productFooter {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+
+  .price {
+    font-size: 18px;
+    font-weight: 800;
+    color: #e5feff;
+    letter-spacing: .2px;
+  }
+
+  .actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+/* Twoja lista nazw — lekko odświeżona */
+.productsListNames {
+  color: #f1f5f9;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.5;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    transition: background .2s ease, border-color .2s ease;
+    border: 1px solid transparent;
+
+    &:hover {
+      background-color: rgba(34, 211, 238, .08);
+      border-color: rgba(148, 163, 184, .16);
+    }
+  }
+}
+
+/* przycisk (Twoja klasa, w stylu akcentu) */
+.myButton {
+  background: linear-gradient(180deg, $accent, $accent-2);
+  color: #001018;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  box-shadow: 0 8px 20px rgba(6, 182, 212, .25), inset 0 1px 0 rgba(255, 255, 255, .35);
+  transition: transform $transition, box-shadow $transition, filter $transition;
+
+  &:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 14px rgba(6, 182, 212, .25) inset;
+  }
+}
+
+/* drobne utility */
+.smallerFont {
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.selectedTitle {
+  color: $accent;
+}
+
+.productsCartNames {
+  font-size: 14px;
+}
+
+/* RESPONSYWNOŚĆ */
+@media (max-width: 900px) {
+  .App {
+    padding: 10px;
+  }
+
+  .AppHeader {
+    padding: 14px;
+  }
+
+  .myButton {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .AppHeader {
+    font-size: 13px;
+    padding: 12px;
   }
 
   .productsListNames {
-    font-size: 12px;
-    line-height: 1.2;
+    font-size: 13px;
+    line-height: 1.35;
   }
 
   .productsCartNames {
@@ -114,24 +291,220 @@
 }
 
 @media (max-width: 480px) {
+  .App {
+    padding: 8px;
+  }
+
   .AppHeader {
     font-size: 12px;
-    padding: 5px;
+    padding: 10px;
   }
 
   .myButton {
-    padding: 5px 8px;
-    font-size: 12px;
-  }
-
-  .smallerFont {
+    padding: 6px 10px;
     font-size: 12px;
   }
 
   .productsListNames {
     font-size: 12px;
-    line-height: 1.1;
+    line-height: 1.25;
   }
+}
+
+/* jasny motyw (opcjonalnie, via prefers-color-scheme) */
+@media (prefers-color-scheme: light) {
+  .AppHeader {
+    background: #ffffff;
+    color: #0f172a;
+    border-color: rgba(2, 6, 23, .08);
+  }
+
+  .productCard {
+    background: #ffffff;
+    border-color: rgba(2, 6, 23, .08);
+  }
+
+  .productImage {
+    // width: 100%;
+    max-width: 120px;
+    /* ✅ ograniczamy maksymalną szerokość */
+    height: 120px;
+    /* ✅ spójny kwadrat */
+    margin: 0 auto 8px auto;
+    /* ✅ wyśrodkowanie obrazka */
+    border-radius: 12px;
+    object-fit: contain;
+    /* ✅ obrazek zachowuje proporcje */
+    background: #0b1220;
+    border: 1px dashed rgba(148, 163, 184, .18);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .15);
+    transition: transform .25s ease;
+
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+
+  .productsListNames li:hover {
+    background-color: rgba(2, 6, 23, .05);
+    border-color: rgba(2, 6, 23, .08);
+  }
+
+  /* === Pagination === */
+  .paginationBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 12px 0;
+    padding: 8px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, .12);
+    background: linear-gradient(180deg, rgba(17, 24, 39, .65), rgba(17, 24, 39, .5));
+  }
+
+  .pageInfo {
+    font-size: 13px;
+    color: #94a3b8;
+  }
+
+  .pagerGroup {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .pagerButton {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, .18);
+    background: rgba(2, 6, 23, .35);
+    color: #e5e7eb;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      border-color: rgba(148, 163, 184, .35);
+    }
+
+    &:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  .pagerButtonActive {
+    border-color: transparent;
+    background: linear-gradient(180deg, #22d3ee, #06b6d4);
+    color: #001018;
+  }
+
+  .pagerEllipsis {
+    padding: 0 4px;
+    color: #94a3b8;
+    user-select: none;
+  }
+
+  /* light mode */
+  @media (prefers-color-scheme: light) {
+    .paginationBar {
+      background: #fff;
+      border-color: rgba(2, 6, 23, .08);
+    }
+
+    .pagerButton {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: rgba(2, 6, 23, .1);
+    }
+  }
+
+  /* === Wybrane komponenty w siatce (obok siebie) === */
+  .selectedGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    /* elastycznie */
+    gap: 14px;
+    margin: 12px 0 20px;
+    ;
+
+    >* {
+      grid-column: span 12;
+    }
+
+    @media (min-width: 600px) {
+      >* {
+        grid-column: span 6;
+      }
+
+      /* 2 w rzędzie */
+    }
+
+    @media (min-width: 960px) {
+      >* {
+        grid-column: span 4;
+      }
+
+      /* 3 w rzędzie */
+    }
+
+    @media (min-width: 1280px) {
+      >* {
+        grid-column: span 3;
+      }
+
+      /* 4 w rzędzie */
+    }
+  }
+
+  
+  
+
+  /* opcjonalnie: dopasuj istniejące .selectedTitle, żeby nie rozpychało kart */
+  .selectedTitle {
+    margin: 0;
+  }
+
+  /* ===== Cena widoczna obok tytułu ===== */
+  .cardHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 6px 0 8px;
+
+    h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.25;
+      color: #f1f5f9;
+      flex: 1 1 auto;
+    }
+  }
+
+  .priceBadge {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: .2px;
+    color: #001018;
+    background: linear-gradient(180deg, #22d3ee, #06b6d4);
+    box-shadow: 0 4px 10px rgba(6, 182, 212, .25), inset 0 1px 0 rgba(255, 255, 255, .35);
+    white-space: nowrap;
+  }
+
+
 
 
 }

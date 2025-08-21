@@ -3,13 +3,11 @@ import ProductList from "./ProductList";
 import Filters from "./Filters";
 import styles from "../App.module.scss";
 import { useAuth } from '../context/Context';
-import LastViewed from './LastViewed';
 
 function Dashboard() { 
   const [cart, setCart] = useState([]);
   const [scrollPosition] = useState(0);
   const { login, loggedInUser } = useAuth();
-  const [listViewed, setListViewed] = useState([]);
   
   // ← Add this state for filters
   const [filters, setFilters] = useState({ socket: [], formFactor: [], memoryType: [] });
@@ -25,7 +23,6 @@ function Dashboard() {
 
   const addToCart = (product) => {
     setCart((prevCart) => [...prevCart, product]);
-    setListViewed((prev) => [...prev, product]);
   };
 
   return (
@@ -38,9 +35,7 @@ function Dashboard() {
           dodawanie={addToCart}
         />
       </div>
-      <div>
-        <LastViewed cart={listViewed} />
-      </div>
+      
     </div>
   );
 }

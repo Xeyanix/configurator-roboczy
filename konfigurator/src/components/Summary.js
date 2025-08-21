@@ -8,7 +8,6 @@ import {
 } from "../redux/appSlice";
 import axios from "axios";
 
-// Mapowanie kluczy na etykiety do wyświetlania
 const TYPE_MAP = {
     motherboard: "Płyta główna",
     processor: "Procesor",
@@ -26,18 +25,13 @@ function Summary() {
     const dispatch = useDispatch();
     const [removingId, setRemovingId] = useState(null);
 
-    // Zbierz części z podsumowania w kolejności
     const parts = TYPE_KEYS.map((key) => summaryConfig[key]);
-
     const totalPrice = parts.reduce((acc, part) => acc + (part?.price || 0), 0);
 
     const handleRemove = async (item, idx) => {
         setRemovingId(item.name);
-
-        // 1. Czyść z podsumowania (summaryConfig)
         dispatch(clearConfigPart({ type: TYPE_KEYS[idx] }));
 
-        // 2. Czyść z koszyka, jeśli jest
         const cartProduct = cart.find(p => p.name === item.name);
         if (cartProduct) {
             dispatch(removeFromCart(cartProduct.id));
@@ -47,7 +41,7 @@ function Summary() {
                 const response = await axios.get(`${apiUrl}/products/shoppingList`);
                 dispatch(loadCartList(response.data));
             } catch (error) {
-                // obsłuż błąd, jeśli chcesz
+                console.error(error);
             }
         }
 
@@ -57,15 +51,24 @@ function Summary() {
     return (
         <div className={styles.box}>
             <div className={styles.summaryBox}>
-                <h2 className={styles.summaryTitle}>Podsumowanie:</h2>
+                <h3 className={styles.summaryTitle}>Podsumowanie:</h3>
+
                 <div>
                     {parts.map((item, idx) => {
                         if (!item) return null;
                         return (
                             <div className={styles.title} key={idx}>
-                                <span className={styles.partInfo}>
-                                    {TYPE_MAP[TYPE_KEYS[idx]]}: {item.name} - {item.price} zł
+                                <div className={styles.partInfo}>
+                                    <span className={styles.name}>
+                                        {TYPE_MAP[TYPE_KEYS[idx]]}: {item.name}
+                                    </span>
+                                </div>
+
+                                {/* Cena jako plakietka */}
+                                <span className={styles.priceBadge}>
+                                    {item.price} zł
                                 </span>
+
                                 <button
                                     className={styles.removeButton}
                                     onClick={() => handleRemove(item, idx)}
@@ -86,9 +89,10 @@ function Summary() {
                         );
                     })}
                 </div>
+
                 <div className={styles.totalBox}>
-                    <span><strong>Suma:</strong></span>
-                    <span className={styles.totalPrice}> {totalPrice} zł</span>
+                    <span className={styles.totalLabel}>Suma:</span>
+                    <span className={styles.totalValue}>{totalPrice} zł</span>
                 </div>
             </div>
         </div>

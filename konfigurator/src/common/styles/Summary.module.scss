@@ -1,75 +1,260 @@
+/* === Summary (spójne z Filters.module.scss) === */
+$bg: #0f172a;
+$panel: #111827;
+$muted: #94a3b8;
+$muted-2: #64748b;
+$accent: #22d3ee;
+$accent-2: #06b6d4;
+$ring: rgba(34, 211, 238, .35);
+$radius: 16px;
+$shadow: 0 10px 30px rgba(2, 6, 23, .6), inset 0 1px 0 rgba(255, 255, 255, .03);
+$transition: .2s ease;
+
+@keyframes pop {
+  from { transform: scale(.98); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Tło sekcji (jak .filtersContainer otoczenie) */
 .box {
-    background-color: #1f1f1f;
-    padding: 1rem;
+  background-color: #0b1220; /* lekko ciemniej niż $bg dla separacji */
+  padding: 1rem;
+  border-radius: calc($radius - 8px);
 }
 
-
+/* Główne pudełko podsumowania – panel jak filtry */
 .summaryBox {
-    background: #2d2d2d;
-    border-radius: 18px;
-    padding: 32px 24px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.07);
-    width: 100%; 
-    margin: 0 auto;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  padding: 24px clamp(16px, 3vw, 28px);
+  color: #e5e7eb;
+  animation: pop .25s ease;
+  backdrop-filter: blur(6px);
+
+  background:
+    radial-gradient(1200px 500px at 10% -20%, rgba(34,211,238,.08), transparent),
+    linear-gradient(180deg, rgba(15,23,42,.9), rgba(15,23,42,.9));
+  border: 1px solid rgba(148,163,184,.12);
 }
 
-
-@media (max-width: 640px) {
-    .summaryBox {
-        padding: 24px 16px;
-    }
-
-    .tile {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .removeButton {
-        margin-left: 0;
-        margin-top: 8px;
-    }
-}
-
+/* Nagłówek sekcji */
 .summaryTitle {
-    color: white;
+  margin: 0 0 14px;
+  font-size: clamp(18px, 2.2vw, 22px);
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &::after {
+    content: "";
+    height: 3px;
+    flex: 1 1 auto;
+    margin-left: 6px;
+    background: linear-gradient(90deg, $accent, transparent);
+    border-radius: 2px;
+  }
 }
 
-.totalBox {
-    color: white;
-}
-
+/* Wiersz pozycji (kafelek) – jak sekcje we filtrach */
 .title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #f8fafd;
-    border-radius: 12px;
-    padding: 12px 18px;
-    margin-bottom: 12px;
-    min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(17,24,39,.65), rgba(17,24,39,.5));
+  border: 1px solid rgba(148,163,184,.12);
+  border-radius: calc($radius - 6px);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  min-height: 44px;
+  transition: border-color $transition, background $transition, transform $transition;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: rgba(148,163,184,.24);
+  }
 }
 
+/* Tekst/część po lewej */
 .partInfo {
-    font-size: 1rem;
-    color: #222;
-    flex: 1;
-    min-width: 0;
-    overflow-wrap: anywhere;
+  font-size: 15px;
+  color: #e2e8f0;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+
+  .label {
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: $muted;
+    margin-right: 8px;
+  }
+
+  .name {
+    font-weight: 600;
+    color: #f1f5f9;
+  }
 }
 
-.removeButton {
-    background: none;
-    border: none;
-    color: #ff5555;
-    font-size: 18px;
-    cursor: pointer;
-    margin-left: 18px;
-    font-weight: bold;
-    line-height: 1;
-    transition: color 0.2s;
-    flex-shrink: 0;
+/* Cena jako plakietka (jak badge akcentu) */
+.priceBadge {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: .2px;
+  color: #001018;
+  background: linear-gradient(180deg, $accent, $accent-2);
+  box-shadow: 0 4px 10px rgba(6,182,212,.25), inset 0 1px 0 rgba(255,255,255,.35);
+  white-space: nowrap;
+  margin-left: 10px;
+}
 
-    &:hover {
-        color: #e52c2c;
-    }
+/* Przycisk usuwania – czerwony, ale w estetyce */
+.removeButton {
+  background: none;
+  border: 1px solid rgba(248,113,113,.45); /* rose-400 */
+  color: #fecaca; /* rose-200 */
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 12px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 10px;
+  padding: 8px 10px;
+  transition: transform $transition, background $transition, border-color $transition, color $transition;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: rgba(248,113,113,.12);
+    border-color: rgba(248,113,113,.75);
+    color: #fee2e2;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* Siatka/układ kafelków pozycji (opcjonalnie) */
+.tile {
+  display: flex;
+  align-items: center;
+}
+
+/* Suma na dole – bar akcentowy */
+.totalBox {
+  margin-top: 16px;
+  border-radius: calc($radius - 6px);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: linear-gradient(180deg, rgba(17,24,39,.65), rgba(17,24,39,.5));
+  border: 1px solid rgba(148,163,184,.16);
+
+  .totalLabel {
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: #e5e7eb;
+  }
+
+  .totalValue {
+    font-weight: 900;
+    letter-spacing: .02em;
+    color: #e5feff;
+    font-size: 18px;
+  }
+
+  /* Pasek akcentowy pod spodem */
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: auto 12px 8px 12px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, $accent, transparent);
+    opacity: .8;
+  }
+}
+
+/* CTA podsumowania (np. „Zamów”) – jeśli używasz przycisku */
+.summaryAction {
+  width: 100%;
+  margin-top: 10px;
+  border: 0;
+  border-radius: calc($radius - 6px);
+  padding: 14px 18px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  background: linear-gradient(180deg, $accent, $accent-2);
+  color: #001018;
+  box-shadow: 0 10px 20px rgba(6,182,212,.25), inset 0 1px 0 rgba(255,255,255,.35);
+  cursor: pointer;
+  transition: transform $transition, box-shadow $transition, filter $transition;
+
+  &:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+  }
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 14px rgba(6,182,212,.25) inset;
+  }
+}
+
+/* Responsywka */
+@media (max-width: 640px) {
+  .summaryBox { padding: 24px 16px; }
+
+  .tile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .priceBadge {
+    margin-left: 0;
+  }
+
+  .removeButton {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}
+
+/* Jasny motyw – spójny z filtrami */
+@media (prefers-color-scheme: light) {
+  .summaryBox {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    color: #0f172a;
+    border-color: rgba(2, 6, 23, .06);
+  }
+
+  .title {
+    background: #ffffff;
+    border-color: rgba(2, 6, 23, .08);
+  }
+
+  .partInfo { color: #0f172a; }
+  .summaryTitle { color: #0f172a; }
+
+  .totalBox {
+    background: #ffffff;
+    border-color: rgba(2,6,23,.08);
+
+    .totalLabel { color: #0f172a; }
+    .totalValue { color: #022c35; }
+  }
 }
