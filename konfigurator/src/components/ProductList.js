@@ -13,9 +13,6 @@ import { v4 as uuidv4 } from "uuid";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 function ProductList({ filters }) {
-
-
-
   const loadingStatus = useSelector((state) => state.app.loadingStatus);
   const lastViewedProducts = useSelector((state) => state.app.lastViewed);
   const summaryConfig = useSelector((state) => state.app.summaryConfig); // <-- TYLKO REDUX
@@ -38,8 +35,47 @@ function ProductList({ filters }) {
       ? "http://localhost:10000"
       : "https://my-node-api-7rco.onrender.com");
 
+  // --- HELPERY: normalizacja i detekcja ---
+  const normRaw = (v) => (v ?? "").toString().toUpperCase().replace(/\s|-/g, "");
 
-  // 1. Pobierz WSZYSTKIE produkty raz na starcie
+  const normSocket = (v) => {
+    const t = normRaw(v).replace(/^SOCKET/, "");
+    if (t.includes("LGA1700")) return "LGA1700";
+    if (t.includes("LGA1200")) return "LGA1200";
+    if (t.includes("AM5")) return "AM5";
+    if (t.includes("AM4")) return "AM4";
+    return t || "";
+  };
+
+  const detectSocket = (p) => {
+    const candidates = [
+      p?.specs?.socket,
+      p?.specs?.cpu_socket,
+      p?.specs?.socket_type,
+      p?.specs?.socketType,
+      p?.name, // fallback: czasem socket jest w nazwie
+    ];
+    for (const c of candidates) {
+      const s = normSocket(c);
+      if (s) return s;
+    }
+    return "";
+  };
+
+  const detectDDR = (p) => {
+    const text = [
+      p?.specs?.memory_type,
+      p?.specs?.ram_type,
+      p?.specs?.type,
+      p?.name,
+    ].map(normRaw).join("|");
+    if (text.includes("DDR5")) return "DDR5";
+    if (text.includes("DDR4")) return "DDR4";
+    return "";
+  };
+
+  const getBoardDDR = (board) => detectDDR(board);
+
   useEffect(() => {
     dispatch(setProductsLoadingState("Loading"));
     axios.get(`${apiUrl}/products`)
@@ -51,34 +87,80 @@ function ProductList({ filters }) {
       .catch(() => dispatch(setProductsLoadingState("error")));
   }, [apiUrl, dispatch]);
 
-
   useEffect(() => {
+    // krótki norm bez map socketów
+    const norm = (v) => (v ?? "").toString().replace(/\s|-/g, "").toUpperCase();
+
+    // 1) Filtry z UI (obsłuż zarówno "cpu" jak i "socket", jeśli UI różnie je nazywa)
+    const socketFilterFromUi = [
+      ...(filters?.cpu ?? []),
+      ...(filters?.socket ?? []),
+    ].map(normSocket).filter(Boolean);
+
+    const formFactorFilter = (filters?.formFactor || []).map(norm);
+    const memoryFilterFromUi = (filters?.memory || []).map(norm);
+    const chipsetFilter = (filters?.chipset || []).map(norm);
+
+    // 2) Wymuszenie zgodności po WYBORZE płyty
+    const selectedBoardSocket = summaryConfig?.motherboard ? detectSocket(summaryConfig.motherboard) : "";
+    const selectedBoardDDR = summaryConfig?.motherboard ? getBoardDDR(summaryConfig.motherboard) : "";
+
+    // Jeśli płyta wybrana → ignorujemy sprzeczne kliknięcia w filtrach
+    const effectiveSocketFilter = selectedBoardSocket ? [selectedBoardSocket] : socketFilterFromUi;
+    const effectiveMemoryFilter = selectedBoardDDR ? [selectedBoardDDR] : memoryFilterFromUi;
+
+    // --- PŁYTY GŁÓWNE (tu używamy TYLKO filtrów z UI) ---
+    setMotherboards(
+      allProducts
+        .filter(p => p.type === "Płyta główna" || p.type === "Motherboard")
+        .filter(p => {
+          const socket = detectSocket(p);
+          const ff = norm(p.specs?.form_factor);
+          const mem = norm(p.specs?.memory_type);
+          const chipset = norm(p.specs?.chipset);
+
+          const cpuMatch = socketFilterFromUi.length === 0 || socketFilterFromUi.includes(socket);
+          const ffMatch = formFactorFilter.length === 0 || formFactorFilter.includes(ff);
+          const memMatch = memoryFilterFromUi.length === 0 || memoryFilterFromUi.includes(mem);
+          const chipsetMatch = chipsetFilter.length === 0 || chipsetFilter.includes(chipset);
+          return cpuMatch && ffMatch && memMatch && chipsetMatch;
+        })
+    );
+
+    // --- PROCESORY (tu wymuszamy socket płyty, jeśli wybrana) ---
+    setProcessors(
+      allProducts
+        .filter(p => p.type === "Procesor" || p.type === "CPU" || p.type === "Processor")
+        .filter(p => {
+          const s = detectSocket(p);
+          return effectiveSocketFilter.length === 0 || effectiveSocketFilter.includes(s);
+        })
+    );
+
+    // --- RAM (wymuszamy DDR płyty, jeśli wybrana) ---
+    setRAMs(
+      allProducts
+        .filter(p => ["RAM", "Pamięć RAM", "Memory"].includes(p.type))
+        .filter(p => {
+          const ramDDR = detectDDR(p);
+
+          // 1) zgodność z płytą
+          if (selectedBoardDDR && ramDDR && selectedBoardDDR !== ramDDR) return false;
+
+          // 2) zgodność z ewentualnym filtrem użytkownika
+          if (effectiveMemoryFilter.length === 0) return true;
+          return ramDDR && effectiveMemoryFilter.includes(ramDDR);
+        })
+    );
+
+    // --- reszta ---
+    setSSDs(allProducts.filter(p => p.type === "SSD"));
+    setChargers(allProducts.filter(p => p.type === "Charger"));
+    setGpus(allProducts.filter(p => p.type === "GPU"));
+    setCases(allProducts.filter(p => p.type === "Cases" || p.type === "Obudowa"));
+  }, [allProducts, filters, summaryConfig]);
 
 
-    const filtered = allProducts.filter(prod => {
-      const socket = prod.specs?.socket?.trim().toUpperCase() || "";
-      const formFactor = prod.specs?.form_factor?.trim().toUpperCase() || "";
-      const memoryType = prod.specs?.memory_type?.trim().toUpperCase() || "";
-
-      const cpuFilter = (filters?.cpu || []).map(f => f.trim().toUpperCase());
-      const formFactorFilter = (filters?.formFactor || []).map(f => f.trim().toUpperCase());
-      const memoryFilter = (filters?.memory || []).map(f => f.trim().toUpperCase());
-
-      const cpuMatch = cpuFilter.length === 0 || cpuFilter.includes(socket);
-      const formFactorMatch = formFactorFilter.length === 0 || formFactorFilter.includes(formFactor);
-      const memoryMatch = memoryFilter.length === 0 || memoryFilter.includes(memoryType);
-      const result = cpuMatch && formFactorMatch && memoryMatch;
-      return result;
-    });
-
-    setMotherboards(filtered.filter(p => p.type === "Płyta główna"));
-    setProcessors(filtered.filter(p => p.type === "Procesor"));
-    setRAMs(filtered.filter(p => p.type === "RAM"));
-    setSSDs(filtered.filter(p => p.type === "SSD"));
-    setChargers(filtered.filter(p => p.type === "Charger"));
-    setGpus(filtered.filter(p => p.type === "GPU"));
-    setCases(filtered.filter(p => p.type === "Cases"));
-  }, [allProducts, filters]);
 
 
   // Funkcja wyboru części
@@ -105,6 +187,24 @@ function ProductList({ filters }) {
         type = ""; break;
     }
     if (!type) return;
+
+    if (type === "processor" && summaryConfig?.motherboard) {
+      const mbSocket = detectSocket(summaryConfig.motherboard);
+      const cpuSocket = detectSocket(product);
+      if (mbSocket && cpuSocket && mbSocket !== cpuSocket) {
+        alert(`Ten procesor (${cpuSocket}) nie pasuje do wybranej płyty (${mbSocket}).`);
+        return;
+      }
+    }
+
+    if (type === "ram" && summaryConfig?.motherboard) {
+      const mbDDR = getBoardDDR(summaryConfig.motherboard);
+      const ramDDR = detectDDR(product);
+      if (mbDDR && ramDDR && mbDDR !== ramDDR) {
+        alert(`Ten RAM (${ramDDR}) nie pasuje do wybranej płyty (${mbDDR}).`);
+        return;
+      }
+    }
 
     // Zapisz do Redux (podsumowanie)
     dispatch(setConfigPart({ type, part: product }));
@@ -182,8 +282,6 @@ function ProductList({ filters }) {
                   )}
 
                   <h3>{item.name}</h3>
-                  <p>Cena: {item.price} zł</p>
-                  <p>socket: {item.specs.socket}</p>
                   <p>Cena: {item.price} zł</p>
                   <button className={styles.myButton} onClick={() => onSelect(item)}>
                     Dodaj do koszyka

@@ -12,7 +12,7 @@ function Dashboard() {
   const [listViewed, setListViewed] = useState([]);
   
   // ← Add this state for filters
-  const [filters, setFilters] = useState({ cpu: [], formFactor: [], memory: [] });
+  const [filters, setFilters] = useState({ socket: [], formFactor: [], memoryType: [] });
 
   useEffect(() => {
     window.scrollTo({

@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import styles from "../common/styles/Filters.module.scss";
 
 function Filters({ onFilterChange }) {
-  const [cpuFilters, setCpuFilters] = useState([]);
+  const [socketFilters, setCpuFilters] = useState([]);
   const [formFactorFilters, setFormFactorFilters] = useState([]);
   const [memoryFilters, setMemoryFilters] = useState([]);
+  const [ChipsetFilters, setChipsetFilters] = useState([]);
 
   const handleCheckbox = (setter, value) => {
     setter(prev =>
@@ -15,9 +16,11 @@ function Filters({ onFilterChange }) {
 
   const handleApplyFilters = () => {
     onFilterChange({
-      cpu: cpuFilters,
-      formFactor: formFactorFilters,
+      cpu: socketFilters,
+      chipset: ChipsetFilters,
       memory: memoryFilters,
+      formFactor: formFactorFilters,
+
     });
   };
 
@@ -27,11 +30,11 @@ function Filters({ onFilterChange }) {
 
       <div>
         <h4>Gniazdo procesora</h4>
-        {["AM5", "LGA1700"].map(s => (
+        {["AM5", "AM4", "LGA1700"].map(s => (
           <label key={s}>
             <input
               type="checkbox"
-              checked={cpuFilters.includes(s)}
+              checked={socketFilters.includes(s)}
               onChange={() => handleCheckbox(setCpuFilters, s)}
             /> {s}
           </label>
@@ -39,8 +42,21 @@ function Filters({ onFilterChange }) {
       </div>
 
       <div>
+        <h4>Chipset</h4>
+        {["AMD B850", "AMD X870E", "AMD B650E", "AMD A520", "AMD B450", "AMD B650", "AMD B550", "Intel Z790", "Intel B760", "Intel H470"].map(c => (
+          <label key={c}>
+            <input
+              type="checkbox"
+              checked={ChipsetFilters.includes(c)}
+              onChange={() => handleCheckbox(setChipsetFilters, c)}
+            /> {c}
+          </label>
+        ))}
+      </div>
+
+      <div>
         <h4>Format płyty głównej</h4>
-        {["ATX", "mATX", "ITX"].map(f => (
+        {["ATX", "mATX"].map(f => (
           <label key={f}>
             <input
               type="checkbox"

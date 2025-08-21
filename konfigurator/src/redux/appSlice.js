@@ -79,7 +79,7 @@ export const appSlice = createSlice({
             state.cart = state.cart.filter(item => item.id !== action.payload);
             saveCartToStorage(state.cart);
         },
-        // --- PODSUMOWANIE (summaryConfig) ---
+     
         setConfigPart: (state, action) => {
             const { type, part } = action.payload;
             state.summaryConfig[type] = part;
