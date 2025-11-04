@@ -311,16 +311,48 @@ function ProductList({ filters }) {
   function SelectedTile({ label, selected, onChange, className = "" }) {
     if (!selected) return null;
 
+
     return (
-      <div className={`${styles.selectedCard} ${styles.selectedTile}`}>
+      <div className={`${styles.selectedCard} ${styles.selectedTile} ${className}`}>
         <h2 className={styles.selectedTileHeader}>
           <CheckCircleIcon style={{ color: "green", fontSize: 20 }} />
           {label}
         </h2>
-        <p className={styles.selectedTileName}>{selected.name}</p>
-        <p className={styles.selectedTilePrice}>
-          Cena: {formatPrice ? formatPrice(selected.price) : `${selected.price} zł`}
-        </p>
+
+        <div
+          style={{
+            alignItems: "center",
+            gap: 12,
+            marginTop: 8,
+            marginBottom: 8,
+          }}
+        >
+          {selected.image && (
+            <img
+              src={selected.image}
+              alt={selected.name}
+              className={styles.productImage}
+              style={{
+                width: 200,
+                height: 200,
+                objectFit: "contain",
+                flex: "0 0 64px",
+                borderRadius: 8,
+                background: "rgba(255,255,255,0.04)",
+              }}
+            />
+          )}
+
+          <div style={{ minWidth: 0 }}>
+            <p className={styles.selectedTileName} style={{ margin: 0 }}>
+              {selected.name}
+            </p>
+            <p className={styles.selectedTilePrice} style={{ margin: "4px 0 0" }}>
+              Cena: {formatPrice ? formatPrice(selected.price) : `${selected.price} zł`}
+            </p>
+          </div>
+        </div>
+
         <button
           className={`${styles.myButton} ${styles.selectedTileButton}`}
           onClick={onChange}
@@ -333,272 +365,273 @@ function ProductList({ filters }) {
 
 
 
-  // Sub-komponent paginacji (uniwersalny)
-  function Pagination({ page, total, onChange, count }) {
-    const from = (page - 1) * PAGE_SIZE + 1;
-    const to = Math.min(count, page * PAGE_SIZE);
 
-    // generujemy krótki zestaw numerów: 1 … p-1 p p+1 … last
-    const pageNumbers = useMemo(() => {
-      const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
-      const set = new Set([1, totalPages, page - 1, page, page + 1]);
-      return [...set].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b);
-    }, [page, count]);
+// Sub-komponent paginacji (uniwersalny)
+function Pagination({ page, total, onChange, count }) {
+  const from = (page - 1) * PAGE_SIZE + 1;
+  const to = Math.min(count, page * PAGE_SIZE);
 
+  // generujemy krótki zestaw numerów: 1 … p-1 p p+1 … last
+  const pageNumbers = useMemo(() => {
     const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
+    const set = new Set([1, totalPages, page - 1, page, page + 1]);
+    return [...set].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b);
+  }, [page, count]);
 
-    return (
-      <nav className={styles.paginationBar} aria-label="Paginacja produktów">
-        <div className={styles.pageInfo}>
-          {count} produktów • {from}–{to}
-        </div>
-        <div className={styles.pagerGroup} role="group" aria-label="Nawigacja stron">
-          <button
-            type="button"
-            className={styles.pagerButton}
-            onClick={() => onChange(1)}
-            disabled={page === 1}
-            aria-label="Pierwsza strona"
-          >
-            «
-          </button>
-          <button
-            type="button"
-            className={styles.pagerButton}
-            onClick={() => onChange(page - 1)}
-            disabled={page === 1}
-            aria-label="Poprzednia strona"
-          >
-            ‹
-          </button>
-
-          {pageNumbers.map((n, i) => {
-            const prev = pageNumbers[i - 1];
-            const gap = prev && n - prev > 1;
-            return (
-              <React.Fragment key={n}>
-                {gap && <span className={styles.pagerEllipsis}>…</span>}
-                <button
-                  type="button"
-                  className={`${styles.pagerButton} ${n === page ? styles.pagerButtonActive : ""
-                    }`}
-                  aria-current={n === page ? "page" : undefined}
-                  onClick={() => onChange(n)}
-                >
-                  {n}
-                </button>
-              </React.Fragment>
-            );
-          })}
-
-          <button
-            type="button"
-            className={styles.pagerButton}
-            onClick={() => onChange(page + 1)}
-            disabled={page === totalPages}
-            aria-label="Następna strona"
-          >
-            ›
-          </button>
-          <button
-            type="button"
-            className={styles.pagerButton}
-            onClick={() => onChange(totalPages)}
-            disabled={page === totalPages}
-            aria-label="Ostatnia strona"
-          >
-            »
-          </button>
-        </div>
-      </nav>
-    );
-  }
-
-  // uniwersalny renderer kroku z paginacją + oknem scrolla
-  function renderStep(stepKey, label, items, onSelect) {
-    const page = pages[stepKey] ?? 1;
-    const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
-    const start = (page - 1) * PAGE_SIZE;
-    const pageSlice = items.slice(start, start + PAGE_SIZE);
-
-    const onChangePage = (p) => {
-      const next = Math.min(Math.max(1, p), totalPages);
-      if (next !== page) {
-        setPages((prev) => ({ ...prev, [stepKey]: next }));
-        // scroll do góry okna listy w obrębie sekcji
-        listRefs[stepKey]?.current?.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    };
-
-    const scrollWindowStyle = {
-      maxHeight: "60vh",
-      overflowY: "auto",
-      overscrollBehavior: "contain",
-      WebkitOverflowScrolling: "touch",
-      paddingRight: 6,
-      borderRadius: 12,
-      border: "1px solid rgba(148,163,184,0.12)",
-      background: "rgba(17,24,39,0.6)",
-      backdropFilter: "blur(4px)",
-    };
-
-    return (
-      <>
-        <div className={styles.choosen}>Wybierz {label}:</div>
-
-        {items.length > 0 ? (
-          <>
-            {totalPages > 1 && (
-              <Pagination
-                page={page}
-                total={totalPages}
-                onChange={onChangePage}
-                count={items.length}
-              />
-            )}
-
-            <div ref={listRefs[stepKey]} style={scrollWindowStyle}>
-              <div className={styles.productGrid}>
-                {pageSlice.map((item) => (
-                  <article
-                    key={item.id ?? item.sku ?? item.name}
-                    className={styles.productCard}
-                  >
-                    {item.image && (
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className={styles.productImage}
-                      />
-                    )}
-
-                    <div className={styles.productMeta}>
-                      <div className="title">{item.name}</div>
-                      {item.brand && <div className="subtitle">{item.brand}</div>}
-                    </div>
-
-                    <div className={styles.productFooter}>
-                      <div className={styles.price}>{formatPrice(item.price)}</div>
-
-                      <div className="actions">
-                        <button
-                          className={styles.myButton}
-                          onClick={() => onSelect(item)}
-                        >
-                          Dodaj do koszyka
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-
-            {totalPages > 1 && (
-              <Pagination
-                page={page}
-                total={totalPages}
-                onChange={onChangePage}
-                count={items.length}
-              />
-            )}
-          </>
-        ) : (
-          <p>Ładowanie {label.toLowerCase()}...</p>
-        )}
-      </>
-    );
-  }
+  const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
 
   return (
-    <div className={styles.App}>
-      <header className={styles.AppHeader}>
-        {allSelected && (
-          <button className={styles.myButton} onClick={handleRebuild}>
-            Złóż komputer ponownie
-          </button>
-        )}
+    <nav className={styles.paginationBar} aria-label="Paginacja produktów">
+      <div className={styles.pageInfo}>
+        {count} produktów • {from}–{to}
+      </div>
+      <div className={styles.pagerGroup} role="group" aria-label="Nawigacja stron">
+        <button
+          type="button"
+          className={styles.pagerButton}
+          onClick={() => onChange(1)}
+          disabled={page === 1}
+          aria-label="Pierwsza strona"
+        >
+          «
+        </button>
+        <button
+          type="button"
+          className={styles.pagerButton}
+          onClick={() => onChange(page - 1)}
+          disabled={page === 1}
+          aria-label="Poprzednia strona"
+        >
+          ‹
+        </button>
 
-        <div className={styles.smallerFont}>
-          {!summaryConfig.motherboard
-            ? renderStep("motherboard", "płytę główną", motherboards, handleItemClick)
-            : (
-              <SelectedTile
-                label={labels.motherboard}
-                selected={summaryConfig.motherboard}
-                onChange={() =>
-                  dispatch(setConfigPart({ type: "motherboard", part: null }))
-                }
-              />
-            )}
+        {pageNumbers.map((n, i) => {
+          const prev = pageNumbers[i - 1];
+          const gap = prev && n - prev > 1;
+          return (
+            <React.Fragment key={n}>
+              {gap && <span className={styles.pagerEllipsis}>…</span>}
+              <button
+                type="button"
+                className={`${styles.pagerButton} ${n === page ? styles.pagerButtonActive : ""
+                  }`}
+                aria-current={n === page ? "page" : undefined}
+                onClick={() => onChange(n)}
+              >
+                {n}
+              </button>
+            </React.Fragment>
+          );
+        })}
 
-          {summaryConfig.motherboard && !summaryConfig.processor
-            ? renderStep("processor", "procesor", processors, handleItemClick)
-            : summaryConfig.processor && (
-              <SelectedTile
-                label={labels.processor}
-                selected={summaryConfig.processor}
-                onChange={() =>
-                  dispatch(setConfigPart({ type: "processor", part: null }))
-                }
-              />
-            )}
-
-          {summaryConfig.processor && !summaryConfig.ram
-            ? renderStep("ram", "pamięć RAM", rams, handleItemClick)
-            : summaryConfig.ram && (
-              <SelectedTile
-                label={labels.ram}
-                selected={summaryConfig.ram}
-                onChange={() => dispatch(setConfigPart({ type: "ram", part: null }))}
-              />
-            )}
-
-          {summaryConfig.ram && !summaryConfig.ssd
-            ? renderStep("ssd", "dysk SSD", ssds, handleItemClick)
-            : summaryConfig.ssd && (
-              <SelectedTile
-                label={labels.ssd}
-                selected={summaryConfig.ssd}
-                onChange={() => dispatch(setConfigPart({ type: "ssd", part: null }))}
-              />
-            )}
-
-          {summaryConfig.ssd && !summaryConfig.charger
-            ? renderStep("charger", "zasilacz", chargers, handleItemClick)
-            : summaryConfig.charger && (
-              <SelectedTile
-                label={labels.charger}
-                selected={summaryConfig.charger}
-                onChange={() =>
-                  dispatch(setConfigPart({ type: "charger", part: null }))
-                }
-              />
-            )}
-
-          {summaryConfig.charger && !summaryConfig.gpu
-            ? renderStep("gpu", "GPU", gpus, handleItemClick)
-            : summaryConfig.gpu && (
-              <SelectedTile
-                label={labels.gpu}
-                selected={summaryConfig.gpu}
-                onChange={() => dispatch(setConfigPart({ type: "gpu", part: null }))}
-              />
-            )}
-
-          {summaryConfig.gpu && !summaryConfig.case
-            ? renderStep("case", "obudowę", cases, handleItemClick)
-            : summaryConfig.case && (
-              <SelectedTile
-                label={labels.case}
-                selected={summaryConfig.case}
-                onChange={() => dispatch(setConfigPart({ type: "case", part: null }))}
-              />
-            )}
-        </div>
-      </header>
-    </div>
+        <button
+          type="button"
+          className={styles.pagerButton}
+          onClick={() => onChange(page + 1)}
+          disabled={page === totalPages}
+          aria-label="Następna strona"
+        >
+          ›
+        </button>
+        <button
+          type="button"
+          className={styles.pagerButton}
+          onClick={() => onChange(totalPages)}
+          disabled={page === totalPages}
+          aria-label="Ostatnia strona"
+        >
+          »
+        </button>
+      </div>
+    </nav>
   );
+}
+
+// uniwersalny renderer kroku z paginacją + oknem scrolla
+function renderStep(stepKey, label, items, onSelect) {
+  const page = pages[stepKey] ?? 1;
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const start = (page - 1) * PAGE_SIZE;
+  const pageSlice = items.slice(start, start + PAGE_SIZE);
+
+  const onChangePage = (p) => {
+    const next = Math.min(Math.max(1, p), totalPages);
+    if (next !== page) {
+      setPages((prev) => ({ ...prev, [stepKey]: next }));
+      // scroll do góry okna listy w obrębie sekcji
+      listRefs[stepKey]?.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const scrollWindowStyle = {
+    maxHeight: "60vh",
+    overflowY: "auto",
+    overscrollBehavior: "contain",
+    WebkitOverflowScrolling: "touch",
+    paddingRight: 6,
+    borderRadius: 12,
+    border: "1px solid rgba(148,163,184,0.12)",
+    background: "rgba(17,24,39,0.6)",
+    backdropFilter: "blur(4px)",
+  };
+
+  return (
+    <>
+      <div className={styles.choosen}>Wybierz {label}:</div>
+
+      {items.length > 0 ? (
+        <>
+          {totalPages > 1 && (
+            <Pagination
+              page={page}
+              total={totalPages}
+              onChange={onChangePage}
+              count={items.length}
+            />
+          )}
+
+          <div ref={listRefs[stepKey]} style={scrollWindowStyle}>
+            <div className={styles.productGrid}>
+              {pageSlice.map((item) => (
+                <article
+                  key={item.id ?? item.sku ?? item.name}
+                  className={styles.productCard}
+                >
+                  {item.image && (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className={styles.productImage}
+                    />
+                  )}
+
+                  <div className={styles.productMeta}>
+                    <div className="title">{item.name}</div>
+                    {item.brand && <div className="subtitle">{item.brand}</div>}
+                  </div>
+
+                  <div className={styles.productFooter}>
+                    <div className={styles.price}>{formatPrice(item.price)}</div>
+
+                    <div className="actions">
+                      <button
+                        className={styles.myButton}
+                        onClick={() => onSelect(item)}
+                      >
+                        Dodaj do koszyka
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination
+              page={page}
+              total={totalPages}
+              onChange={onChangePage}
+              count={items.length}
+            />
+          )}
+        </>
+      ) : (
+        <p>Ładowanie {label.toLowerCase()}...</p>
+      )}
+    </>
+  );
+}
+
+return (
+  <div className={styles.App}>
+    <header className={styles.AppHeader}>
+      {allSelected && (
+        <button className={styles.myButton} onClick={handleRebuild}>
+          Złóż komputer ponownie
+        </button>
+      )}
+
+      <div className={styles.smallerFont}>
+        {!summaryConfig.motherboard
+          ? renderStep("motherboard", "płytę główną", motherboards, handleItemClick)
+          : (
+            <SelectedTile
+              label={labels.motherboard}
+              selected={summaryConfig.motherboard}
+              onChange={() =>
+                dispatch(setConfigPart({ type: "motherboard", part: null }))
+              }
+            />
+          )}
+
+        {summaryConfig.motherboard && !summaryConfig.processor
+          ? renderStep("processor", "procesor", processors, handleItemClick)
+          : summaryConfig.processor && (
+            <SelectedTile
+              label={labels.processor}
+              selected={summaryConfig.processor}
+              onChange={() =>
+                dispatch(setConfigPart({ type: "processor", part: null }))
+              }
+            />
+          )}
+
+        {summaryConfig.processor && !summaryConfig.ram
+          ? renderStep("ram", "pamięć RAM", rams, handleItemClick)
+          : summaryConfig.ram && (
+            <SelectedTile
+              label={labels.ram}
+              selected={summaryConfig.ram}
+              onChange={() => dispatch(setConfigPart({ type: "ram", part: null }))}
+            />
+          )}
+
+        {summaryConfig.ram && !summaryConfig.ssd
+          ? renderStep("ssd", "dysk SSD", ssds, handleItemClick)
+          : summaryConfig.ssd && (
+            <SelectedTile
+              label={labels.ssd}
+              selected={summaryConfig.ssd}
+              onChange={() => dispatch(setConfigPart({ type: "ssd", part: null }))}
+            />
+          )}
+
+        {summaryConfig.ssd && !summaryConfig.charger
+          ? renderStep("charger", "zasilacz", chargers, handleItemClick)
+          : summaryConfig.charger && (
+            <SelectedTile
+              label={labels.charger}
+              selected={summaryConfig.charger}
+              onChange={() =>
+                dispatch(setConfigPart({ type: "charger", part: null }))
+              }
+            />
+          )}
+
+        {summaryConfig.charger && !summaryConfig.gpu
+          ? renderStep("gpu", "GPU", gpus, handleItemClick)
+          : summaryConfig.gpu && (
+            <SelectedTile
+              label={labels.gpu}
+              selected={summaryConfig.gpu}
+              onChange={() => dispatch(setConfigPart({ type: "gpu", part: null }))}
+            />
+          )}
+
+        {summaryConfig.gpu && !summaryConfig.case
+          ? renderStep("case", "obudowę", cases, handleItemClick)
+          : summaryConfig.case && (
+            <SelectedTile
+              label={labels.case}
+              selected={summaryConfig.case}
+              onChange={() => dispatch(setConfigPart({ type: "case", part: null }))}
+            />
+          )}
+      </div>
+    </header>
+  </div>
+);
 }
 
 export default ProductList;
